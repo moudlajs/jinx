@@ -8,5 +8,11 @@ export default tseslint.config(
   ...tseslint.configs.strict,
   {
     languageOptions: { globals: { ...globals.browser, ...globals.node } },
+    rules: {
+      '@typescript-eslint/no-unused-vars': [
+        'error',
+        { varsIgnorePattern: '^_', argsIgnorePattern: '^_', destructuredArrayIgnorePattern: '^_' },
+      ],
+    },
   },
 );
