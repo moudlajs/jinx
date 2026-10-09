@@ -1,0 +1,16 @@
+node_modules/
+dist/
+coverage/
+playwright-report/
+test-results/
+.vite/
+.DS_Store
+.env
+*.log
+
+# engine (v0.2)
+.venv/
+__pycache__/
+.pytest_cache/
+.ruff_cache/
+*.duckdb

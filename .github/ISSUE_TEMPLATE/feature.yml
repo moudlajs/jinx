@@ -1,0 +1,17 @@
+name: Feature or idea
+description: A new stat condition, template, quote or feature
+labels: ["type:feature"]
+assignees: ["moudlajs"]
+body:
+  - type: textarea
+    id: what
+    attributes:
+      label: What and why
+      description: What should exist, and why it would make jinx funnier or better.
+    validations:
+      required: true
+  - type: textarea
+    id: done
+    attributes:
+      label: Acceptance criteria
+      description: How we know it's done.

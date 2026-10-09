@@ -1,0 +1,89 @@
+# Typecheck, lint, unit tests, build and Playwright smoke on PRs and main.
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
+
+defaults:
+  run:
+    working-directory: web
+
+jobs:
+  web:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
+        with:
+          node-version-file: web/.nvmrc
+          cache: npm
+          cache-dependency-path: web/package-lock.json
+      - run: npm ci
+      - run: npm run typecheck
+      - run: npm run lint
+      - run: npm test
+      - run: npm run build
+
+  e2e:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
+        with:
+          node-version-file: web/.nvmrc
+          cache: npm
+          cache-dependency-path: web/package-lock.json
+      - run: npm ci
+      - run: npx playwright install --with-deps chromium
+      - run: npm run test:e2e
+      - uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        if: failure()
+        with:
+          name: playwright-report
+          path: web/playwright-report
+          retention-days: 7
+
+  # The one job the ruleset requires, so adding jobs never changes required checks.
+  check:
+    if: always()
+    needs: [web, e2e]
+    runs-on: ubuntu-latest
+    steps:
+      - name: All required jobs passed
+        working-directory: .
+        run: |
+          echo '${{ toJSON(needs) }}'
+          [ "${{ contains(needs.*.result, 'failure') || contains(needs.*.result, 'cancelled') || contains(needs.*.result, 'skipped') }}" = "false" ]
+
+  conventions:
+    # The PR title becomes the squash commit subject that release-please reads.
+    if: github.event_name == 'pull_request'
+    runs-on: ubuntu-latest
+    steps:
+      - name: PR title follows Conventional Commits
+        working-directory: .
+        env:
+          TITLE: ${{ github.event.pull_request.title }}
+        run: |
+          echo "title: $TITLE"
+          printf '%s' "$TITLE" | grep -qE '^(feat|fix|docs|test|ci|refactor|perf|chore|build|revert)(\([a-z0-9-]+\))?!?: .+' || {
+            echo "PR title must be <type>(<scope>): <subject> - see CONTRIBUTING.md"; exit 1; }
+
+      - name: Branch name follows the convention
+        working-directory: .
+        env:
+          BRANCH: ${{ github.event.pull_request.head.ref }}
+        run: |
+          echo "branch: $BRANCH"
+          printf '%s' "$BRANCH" | grep -qE '^((feat|fix|docs|test|ci|refactor|perf|chore|build)/[a-z0-9._/-]+|release-please--.+)$' || {
+            echo "Branch must be <type>/<short-description>, lowercase - see CONTRIBUTING.md"; exit 1; }

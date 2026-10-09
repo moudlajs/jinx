@@ -1,0 +1,22 @@
+name: Bug report
+description: Something looks or behaves wrong
+labels: ["type:bug"]
+assignees: ["moudlajs"]
+body:
+  - type: textarea
+    id: what
+    attributes:
+      label: What happened
+      description: What you did, what you expected, what you got.
+    validations:
+      required: true
+  - type: input
+    id: link
+    attributes:
+      label: Stat link
+      description: The share link (with its #seed) if a specific stat is wrong.
+  - type: input
+    id: device
+    attributes:
+      label: Device and browser
+      placeholder: e.g. iPhone 15, Safari 26
