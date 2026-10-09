@@ -28,7 +28,21 @@ const els = {
 };
 let current: Stat | undefined;
 
+const status = byId('status');
+let statusTimer: number | undefined;
+function announce(message: string): void {
+  status.textContent = message;
+  clearTimeout(statusTimer);
+  statusTimer = window.setTimeout(() => (status.textContent = ''), 3000);
+}
+
+function clearStatus(): void {
+  clearTimeout(statusTimer);
+  status.textContent = '';
+}
+
 function show(stat: Stat): void {
+  clearStatus();
   current = stat;
   renderCard(els, stat);
   hero.hidden = true;
@@ -54,14 +68,6 @@ document.addEventListener('keydown', (e) => {
 function fromHash(): void {
   const seed = seedFromHash(location.hash);
   if (seed && seed !== current?.seed) show(generate(seed));
-}
-
-const status = byId('status');
-let statusTimer: number | undefined;
-function announce(message: string): void {
-  status.textContent = message;
-  clearTimeout(statusTimer);
-  statusTimer = window.setTimeout(() => (status.textContent = ''), 3000);
 }
 
 async function copy(): Promise<void> {
