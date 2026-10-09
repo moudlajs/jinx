@@ -45,6 +45,15 @@ test('copy puts the stat, satire label and seed link on the clipboard', async ({
   expect(clip).toMatch(/\/jinx\/#abc12$/);
 });
 
+test('a new stat clears the "Copied" message', async ({ page, context }) => {
+  await context.grantPermissions(['clipboard-read', 'clipboard-write']);
+  await page.goto('./#abc12');
+  await page.getByRole('button', { name: 'Copy' }).click();
+  await expect(page.getByRole('status')).toContainText('Copied');
+  await page.getByRole('button', { name: 'Another one' }).click();
+  await expect(page.getByRole('status')).toBeEmpty();
+});
+
 test('a seed link reproduces the stat, in a fresh page too', async ({ page, browser }) => {
   await page.goto('./');
   await page.getByRole('button', { name: 'Generate a cursed stat' }).click();
