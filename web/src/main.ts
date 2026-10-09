@@ -5,6 +5,7 @@ import { applyI18n, t } from './i18n';
 import { attribution, randomQuote } from './quotes';
 import { copyText, shareBody, statUrl } from './share';
 import type { Stat } from './stat';
+import { initThemeToggle } from './theme';
 import { renderCard } from './ui/card';
 
 const byId = <T extends HTMLElement = HTMLElement>(id: string): T => {
@@ -14,6 +15,7 @@ const byId = <T extends HTMLElement = HTMLElement>(id: string): T => {
 };
 
 applyI18n(document);
+initThemeToggle(byId<HTMLButtonElement>('theme-toggle'));
 
 const quote = randomQuote();
 byId('quote-text').textContent = quote.text;

@@ -4,12 +4,20 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>jinx — cursed NFL stats</title>
+    <meta name="color-scheme" content="dark light" />
+    <script>
+      try {
+        const t = localStorage.getItem('jinx-theme');
+        if (t === 'light' || t === 'dark') document.documentElement.dataset.theme = t;
+      } catch {}
+    </script>
     <meta name="description" content="Cursed NFL stats. A parody of broadcast-style insights. Satire: every number is made up." />
   </head>
   <body>
     <header class="site-header">
       <a class="brand" href="./">jinx</a>
       <span class="tagline" data-i18n="app.tagline"></span>
+      <button type="button" class="theme-toggle" id="theme-toggle"></button>
     </header>
 
     <main id="app">

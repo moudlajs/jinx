@@ -12,5 +12,8 @@
   "card.copied": "Copied. Paste it somewhere cursed.",
   "card.copyFailed": "Couldn't copy. Select the text and copy it by hand.",
   "share.satireLabel": "SATIRE: a made-up stat from jinx",
-  "share.title": "jinx — cursed NFL stats"
+  "share.title": "jinx — cursed NFL stats",
+  "theme.toLight": "Light",
+  "theme.toDark": "Dark",
+  "theme.label": "Switch colour theme"
 }
