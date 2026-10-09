@@ -3,10 +3,43 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>jinx</title>
+    <title>jinx — cursed NFL stats</title>
+    <meta name="description" content="Cursed NFL stats. A parody of broadcast-style insights. Satire: every number is made up." />
   </head>
   <body>
-    <main id="app"></main>
+    <header class="site-header">
+      <a class="brand" href="./">jinx</a>
+      <span class="tagline" data-i18n="app.tagline"></span>
+    </header>
+
+    <main id="app">
+      <figure class="quote" id="quote">
+        <blockquote><p id="quote-text"></p></blockquote>
+        <figcaption id="quote-author"></figcaption>
+      </figure>
+
+      <div class="hero" id="hero">
+        <button type="button" class="btn btn-primary" id="generate" data-i18n="hero.generate"></button>
+        <p class="hint" data-i18n="hero.hint"></p>
+      </div>
+
+      <article class="card" id="card" hidden aria-live="polite">
+        <p class="badge" id="card-badge">
+          <span data-i18n="card.badge.satire"></span>
+          <span class="visually-hidden" data-i18n="card.badge.satireLong"></span>
+        </p>
+        <p class="stat-text" id="stat-text"></p>
+        <p class="stat-punchline" id="stat-punchline" hidden></p>
+        <div class="actions" id="card-actions">
+          <button type="button" class="btn btn-primary" id="another" data-i18n="card.another"></button>
+        </div>
+      </article>
+    </main>
+
+    <footer class="site-footer">
+      <p data-i18n="footer.disclaimer"></p>
+      <p><a href="https://github.com/moudlajs/jinx" data-i18n="footer.source"></a></p>
+    </footer>
     <script type="module" src="/src/main.ts"></script>
   </body>
 </html>

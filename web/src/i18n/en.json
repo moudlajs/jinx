@@ -1,0 +1,10 @@
+{
+  "app.tagline": "Cursed NFL stats",
+  "hero.generate": "Generate a cursed stat",
+  "hero.hint": "Tip: press Space for another one.",
+  "card.badge.satire": "Satire",
+  "card.badge.satireLong": "Satire: every number on this card is made up.",
+  "card.another": "Another one",
+  "footer.disclaimer": "jinx is satire. Fejk stats are generated at random about teams, positions and archetypes, never real players. Not affiliated with the NFL, any team or broadcaster.",
+  "footer.source": "Source on GitHub"
+}
