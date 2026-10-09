@@ -40,6 +40,12 @@ describe('stat schema', () => {
     expect(validateStat(noQuery)).toBe(false);
   });
 
+  test("a stat can't carry the other mode's fields", () => {
+    expect(validateStat({ ...fejk, query: 'select 1' })).toBe(false);
+    expect(validateStat({ ...fejk, seasons: { from: 1999, to: 2025 } })).toBe(false);
+    expect(validateStat({ ...real, seed: 'abc12' })).toBe(false);
+  });
+
   test('rejects unknown fields', () => {
     expect(validateStat({ ...fejk, extra: 1 })).toBe(false);
   });

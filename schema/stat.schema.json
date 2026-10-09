@@ -1,6 +1,6 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "https://moudlajs.github.io/jinx/schema/stat.schema.json",
+  "$id": "https://raw.githubusercontent.com/moudlajs/jinx/main/schema/stat.schema.json",
   "title": "Stat",
   "description": "One jinx stat. Produced by the Fejk generator (web) and the Real engine (stats.json), rendered by the same card.",
   "type": "object",
@@ -60,8 +60,18 @@
     "seed": { "description": "Fejk mode: the seed that re-renders this stat.", "type": "string", "pattern": "^[0-9a-z]{1,7}$" }
   },
   "allOf": [
-    { "if": { "properties": { "mode": { "const": "real" } } }, "then": { "required": ["query", "seasons"] } },
-    { "if": { "properties": { "mode": { "const": "fejk" } } }, "then": { "required": ["seed"], "properties": { "subject": { "properties": { "kind": { "not": { "const": "player" } } } } } } }
+    {
+      "if": { "properties": { "mode": { "const": "real" } } },
+      "then": { "required": ["query", "seasons"], "not": { "required": ["seed"] } }
+    },
+    {
+      "if": { "properties": { "mode": { "const": "fejk" } } },
+      "then": {
+        "required": ["seed"],
+        "not": { "anyOf": [{ "required": ["query"] }, { "required": ["seasons"] }] },
+        "properties": { "subject": { "properties": { "kind": { "not": { "const": "player" } } } } }
+      }
+    }
   ],
   "$defs": {
     "term": {
