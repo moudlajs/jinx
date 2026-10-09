@@ -1,5 +1,5 @@
 import { execFileSync } from 'node:child_process';
-import { existsSync, readFileSync } from 'node:fs';
+import { existsSync, readFileSync, rmSync } from 'node:fs';
 import { beforeAll, describe, expect, test } from 'vitest';
 
 const dist = new URL('../dist/', import.meta.url);
@@ -22,6 +22,18 @@ describe('built index.html', () => {
     expect(meta('name', 'theme-color')).toBeTruthy();
     expect(html).not.toContain('%SITE_URL%');
   });
+
+  test('a SITE_URL without a trailing slash still gives well-formed URLs', () => {
+    const outDir = 'dist-site-url-test';
+    execFileSync('npx', ['vite', 'build', '--logLevel', 'error', '--outDir', outDir], {
+      cwd: new URL('..', import.meta.url),
+      env: { ...process.env, SITE_URL: 'https://jinx.example' },
+    });
+    const built = readFileSync(new URL(`../${outDir}/index.html`, import.meta.url), 'utf8');
+    rmSync(new URL(`../${outDir}`, import.meta.url), { recursive: true });
+    expect(built).toContain('<meta property="og:image" content="https://jinx.example/og.png"');
+    expect(built).toContain('<meta property="og:url" content="https://jinx.example/"');
+  }, 60_000);
 
   test('ships the image and favicon', () => {
     expect(existsSync(new URL('og.png', dist))).toBe(true);
