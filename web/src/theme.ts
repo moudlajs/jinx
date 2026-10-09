@@ -12,6 +12,11 @@ function currentTheme(): Theme {
 }
 
 export function initThemeToggle(button: HTMLButtonElement): void {
+  const themeColor = document.querySelector<HTMLMetaElement>('meta[name="theme-color"]');
+  const sync = () => {
+    if (themeColor) themeColor.content = getComputedStyle(document.documentElement).getPropertyValue('--bg').trim();
+    label();
+  };
   const label = () => {
     button.textContent = currentTheme() === 'dark' ? t('theme.toLight') : t('theme.toDark');
     button.setAttribute('aria-label', `${t('theme.label')}: ${button.textContent}`);
@@ -24,8 +29,8 @@ export function initThemeToggle(button: HTMLButtonElement): void {
     } catch {
       // Private mode: the toggle still works for this visit.
     }
-    label();
+    sync();
   });
-  matchMedia('(prefers-color-scheme: light)').addEventListener('change', label);
-  label();
+  matchMedia('(prefers-color-scheme: light)').addEventListener('change', sync);
+  sync();
 }
