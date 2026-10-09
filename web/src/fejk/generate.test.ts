@@ -10,6 +10,10 @@ describe('generate', () => {
     for (const seed of seeds.slice(0, 50)) expect(generate(seed)).toEqual(generate(seed));
   });
 
+  test('rejects a seed that is not canonical base36', () => {
+    for (const bad of ['', 'ABC', '00a', 'x'.repeat(8), '<b>']) expect(() => generate(bad), bad).toThrow(/invalid seed/);
+  });
+
   test('different seeds give different stats', () => {
     const texts = new Set(seeds.map((s) => generate(s).text));
     expect(texts.size).toBeGreaterThan(seeds.length * 0.99);

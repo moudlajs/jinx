@@ -6,7 +6,7 @@ import subjectsData from '../data/fejk/subjects.json';
 import templatesData from '../data/fejk/templates.json';
 import type { Stat } from '../stat';
 import { createRng, type Rng } from './rng';
-import { randomSeed, seedToNumber } from './seed';
+import { parseSeed, randomSeed, seedToNumber } from './seed';
 
 export interface Subject {
   id: string;
@@ -96,6 +96,7 @@ function numbersFor(metric: Metric, rng: Rng): { phrase: Record<string, string>;
 }
 
 export function generate(seed: string): Stat {
+  if (parseSeed(seed) !== seed) throw new Error(`invalid seed: ${JSON.stringify(seed)}`);
   const rng = createRng(seedToNumber(seed));
   const subject = rng.pick(banks.subjects);
   const metric = rng.pick(banks.metrics);
