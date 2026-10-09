@@ -1,0 +1,8 @@
+[
+  "{Subject} {metric} {conditions}.",
+  "Since {since}, {subject} {metric} {conditions}.",
+  "{Conditions}, {subject} {metric}.",
+  "{Subject} {metric} {conditions} ({sample}).",
+  "Fun fact: {subject} {metric} {conditions}.",
+  "Over the last {years} seasons, {subject} {metric} {conditions}."
+]

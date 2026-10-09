@@ -1,0 +1,16 @@
+[
+  { "id": "record", "kind": "record", "label": "win-loss record", "pl": "are {record}", "sg": "is {record}" },
+  { "id": "fourth-down", "kind": "percentage", "extreme": "low", "unit": "attempts", "label": "4th-down conversion rate", "pl": "convert just {pct} of fourth downs", "sg": "converts just {pct} of fourth downs" },
+  { "id": "fg-miss", "kind": "percentage", "extreme": "high", "unit": "attempts", "label": "field goals missed", "pl": "have missed {pct} of field goals", "sg": "has missed {pct} of field goals" },
+  { "id": "coin-toss", "kind": "percentage", "extreme": "both", "unit": "tosses", "label": "coin tosses won", "pl": "have won {pct} of coin tosses", "sg": "has won {pct} of coin tosses" },
+  { "id": "false-start", "kind": "percentage", "extreme": "high", "unit": "snaps", "label": "false starts per snap", "pl": "have false-started on {pct} of snaps", "sg": "has false-started on {pct} of snaps" },
+  { "id": "drops", "kind": "percentage", "extreme": "high", "unit": "targets", "label": "catchable passes dropped", "pl": "have dropped {pct} of catchable passes", "sg": "has dropped {pct} of catchable passes" },
+  { "id": "onside", "kind": "percentage", "extreme": "high", "unit": "attempts", "label": "onside kicks recovered", "pl": "have recovered {pct} of their own onside kicks", "sg": "has recovered {pct} of their own onside kicks" },
+  { "id": "opening-drive", "kind": "percentage", "extreme": "both", "unit": "drives", "label": "opening drives scored", "pl": "have scored on {pct} of opening drives", "sg": "has scored on {pct} of opening drives" },
+  { "id": "challenges", "kind": "percentage", "extreme": "low", "unit": "challenges", "label": "challenges won", "pl": "have won {pct} of replay challenges", "sg": "has won {pct} of replay challenges" },
+  { "id": "ints", "kind": "count", "unit": "games", "label": "interceptions thrown", "pl": "have thrown {count} interceptions", "sg": "has thrown {count} interceptions" },
+  { "id": "fumbles", "kind": "count", "unit": "games", "label": "fumbles", "pl": "have fumbled {count} times", "sg": "has fumbled {count} times" },
+  { "id": "celebration-flags", "kind": "count", "unit": "games", "label": "celebration penalties", "pl": "have drawn {count} celebration penalties", "sg": "has drawn {count} celebration penalties" },
+  { "id": "long-tds-allowed", "kind": "count", "unit": "games", "label": "70+ yard touchdowns allowed", "pl": "have allowed {count} touchdowns of 70+ yards", "sg": "has allowed {count} touchdowns of 70+ yards" },
+  { "id": "gatorade", "kind": "count", "unit": "games", "label": "Gatorade coolers knocked over", "pl": "have knocked over {count} Gatorade coolers", "sg": "has knocked over {count} Gatorade coolers" }
+]
