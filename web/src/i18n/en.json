@@ -6,5 +6,11 @@
   "card.badge.satireLong": "Satire: every number on this card is made up.",
   "card.another": "Another one",
   "footer.disclaimer": "jinx is satire. Fejk stats are generated at random about teams, positions and archetypes, never real players. Not affiliated with the NFL, any team or broadcaster.",
-  "footer.source": "Source on GitHub"
+  "footer.source": "Source on GitHub",
+  "card.copy": "Copy",
+  "card.share": "Share",
+  "card.copied": "Copied. Paste it somewhere cursed.",
+  "card.copyFailed": "Couldn't copy. Select the text and copy it by hand.",
+  "share.satireLabel": "SATIRE: a made-up stat from jinx",
+  "share.title": "jinx — cursed NFL stats"
 }

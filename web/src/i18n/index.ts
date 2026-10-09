@@ -13,13 +13,11 @@ export function isKey(key: string): key is Key {
   return key in strings;
 }
 
-// Fills every [data-i18n] element's text (and [data-i18n-attr="aria-label"] etc.).
+// Fills every [data-i18n] element's text.
 export function applyI18n(root: ParentNode): void {
   for (const el of root.querySelectorAll<HTMLElement>('[data-i18n]')) {
     const key = el.dataset.i18n ?? '';
     if (!isKey(key)) throw new Error(`unknown i18n key: ${key}`);
-    const attr = el.dataset.i18nAttr;
-    if (attr) el.setAttribute(attr, t(key));
-    else el.textContent = t(key);
+    el.textContent = t(key);
   }
 }
