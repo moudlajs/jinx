@@ -66,6 +66,14 @@ test('a seed link reproduces the stat, in a fresh page too', async ({ page, brow
   await other.close();
 });
 
+test('editing the hash on an open page renders that seed', async ({ page }) => {
+  await page.goto('./#abc12');
+  const first = await statText(page).textContent();
+  await page.evaluate(() => (location.hash = 'xyz99'));
+  await expect(statText(page)).not.toHaveText(first ?? '');
+  await expect(page.locator('#card')).toHaveAttribute('data-seed', 'xyz99');
+});
+
 test('a bad hash is ignored', async ({ page }) => {
   await page.goto('./#<img src=x onerror=alert(1)>');
   await expect(page.locator('#card')).toBeHidden();
