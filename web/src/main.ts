@@ -1,8 +1,9 @@
 import './style.css';
 import { generate, nextStat } from './fejk/generate';
 import { seedFromHash, setHashSeed } from './hash';
-import { applyI18n } from './i18n';
+import { applyI18n, t } from './i18n';
 import { attribution, randomQuote } from './quotes';
+import { copyText, shareBody, statUrl } from './share';
 import type { Stat } from './stat';
 import { renderCard } from './ui/card';
 
@@ -53,6 +54,38 @@ document.addEventListener('keydown', (e) => {
 function fromHash(): void {
   const seed = seedFromHash(location.hash);
   if (seed && seed !== current?.seed) show(generate(seed));
+}
+
+const status = byId('status');
+let statusTimer: number | undefined;
+function announce(message: string): void {
+  status.textContent = message;
+  clearTimeout(statusTimer);
+  statusTimer = window.setTimeout(() => (status.textContent = ''), 3000);
+}
+
+async function copy(): Promise<void> {
+  if (!current) return;
+  try {
+    await navigator.clipboard.writeText(copyText(current, location.href));
+    announce(t('card.copied'));
+  } catch {
+    announce(t('card.copyFailed'));
+  }
+}
+
+byId('copy').addEventListener('click', () => void copy());
+
+const shareButton = byId('share');
+if (typeof navigator.share === 'function') {
+  shareButton.hidden = false;
+  shareButton.addEventListener('click', () => {
+    if (!current) return;
+    const data = { title: t('share.title'), text: shareBody(current), url: statUrl(current, location.href) };
+    navigator.share(data).catch((err: unknown) => {
+      if (!(err instanceof DOMException && err.name === 'AbortError')) void copy();
+    });
+  });
 }
 
 window.addEventListener('hashchange', fromHash);
