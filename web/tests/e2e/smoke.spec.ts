@@ -77,6 +77,13 @@ test('theme toggle switches and remembers', async ({ page }) => {
   const before = await page.evaluate(() => getComputedStyle(document.body).backgroundColor);
   await page.locator('#theme-toggle').click();
   await expect.poll(() => page.evaluate(() => getComputedStyle(document.body).backgroundColor)).not.toBe(before);
+  const themeColor = () =>
+    page.evaluate(() => [
+      document.querySelector<HTMLMetaElement>('meta[name="theme-color"]')?.content,
+      getComputedStyle(document.documentElement).getPropertyValue('--bg').trim(),
+    ]);
+  const [meta, bg] = await themeColor();
+  expect(meta).toBe(bg);
   const theme = await page.evaluate(() => document.documentElement.dataset.theme);
   await page.reload();
   expect(await page.evaluate(() => document.documentElement.dataset.theme)).toBe(theme);
