@@ -8,11 +8,14 @@ technically true and completely useless.
 
 **Live:** https://moudlajs.github.io/jinx/
 
+<img src="docs/screenshot.png" alt="jinx on a phone: a Satire-labelled card reading a made-up stat about the Raiders" width="320">
+
 ## How it works
 
 - **Fejk mode** combines absurd conditions, subjects and numbers from word
   banks in your browser. Every number is made up, and every card says so.
   A stat's seed is in the link, so a shared link shows the same stat.
+  Copy and Share always include the satire label.
 - **Real mode** (coming in v0.2) runs real queries over public NFL data.
 
 No accounts, no cookies, no trackers.
