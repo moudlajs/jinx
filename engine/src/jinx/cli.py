@@ -27,13 +27,16 @@ def parser() -> argparse.ArgumentParser:
     gen.add_argument("--count", type=positive_int, default=500, help="stats to generate")
     gen.add_argument("--seed", type=int, default=0, help="seed for a reproducible run")
     gen.add_argument("--out", type=Path, default=Path("dist/stats.json"), help="output path")
+    gen.add_argument(
+        "--data-dir", type=Path, help="read <source>.parquet|csv from here instead of nflverse"
+    )
     return p
 
 
 def main(argv: list[str] | None = None) -> int:
     args = parser().parse_args(argv)
     jinx_log.setup(args.verbose)
-    opts = pipeline.Options(count=args.count, seed=args.seed, out=args.out)
+    opts = pipeline.Options(args.count, args.seed, args.out, args.data_dir)
     try:
         pipeline.run(opts)
     except JinxError as e:

@@ -14,6 +14,7 @@ class Options:
     count: int
     seed: int
     out: Path
+    data_dir: Path | None = None
 
 
 def run(opts: Options) -> int:
