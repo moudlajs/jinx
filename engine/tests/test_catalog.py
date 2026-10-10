@@ -113,3 +113,11 @@ def test_every_metric_declares_its_sources():
 
 def test_perfect_kicking_is_not_extreme():
     assert METRICS["field-goals"].high is None
+
+
+def test_queries_have_no_empty_or_always_true_clauses():
+    for metric in METRICS.values():
+        for subject in metric.subjects:
+            q = query.build(metric, SUBJECTS[subject], [], ALL)
+            assert "(true)" not in q.sql
+            assert "()" not in q.sql
