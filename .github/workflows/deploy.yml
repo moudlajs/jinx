@@ -1,5 +1,7 @@
-# Builds web/ and publishes it to GitHub Pages. A failed step never deploys,
-# so the previous version stays live.
+# Builds web/ with the Real-mode stats.json and publishes it to GitHub Pages.
+# Tuesday mornings (and on request) the engine regenerates stats.json from fresh
+# nflverse data; other deploys reuse the last good file. A failed step never
+# deploys, so the previous version stays live.
 name: Deploy
 
 on:
@@ -7,7 +9,14 @@ on:
     branches: [main]
   release:
     types: [published]
+  schedule:
+    - cron: "0 6 * * 2"
   workflow_dispatch:
+    inputs:
+      regenerate:
+        description: Regenerate stats.json from fresh data
+        type: boolean
+        default: false
 
 permissions: {}
 
@@ -16,7 +25,54 @@ concurrency:
   cancel-in-progress: false
 
 jobs:
+  stats:
+    # The `stats` prerelease only stores the data file; publishing it must not deploy.
+    if: github.event_name != 'release' || startsWith(github.event.release.tag_name, 'v')
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write # update the stats.json asset on the `stats` release
+    env:
+      GH_TOKEN: ${{ github.token }}
+      REGENERATE: ${{ github.event_name == 'schedule' || inputs.regenerate == true }}
+    defaults:
+      run:
+        working-directory: engine
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - name: Reuse the last good stats.json
+        id: reuse
+        if: env.REGENERATE != 'true'
+        run: |
+          if gh release download stats --pattern stats.json --dir . --clobber; then
+            echo "found=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "::notice::No stored stats.json yet; regenerating."
+          fi
+      - uses: astral-sh/setup-uv@bec219d24cd3e171d82865faccec33120bb574f4 # v10.1.0
+        if: steps.reuse.outputs.found != 'true'
+        with:
+          working-directory: engine
+      - name: Regenerate from nflverse
+        if: steps.reuse.outputs.found != 'true'
+        run: |
+          uv sync --locked
+          uv run pytest -m slow
+          uv run jinx generate --count 500 --seed "$(date -u +%G%V)" --out stats.json
+      - name: Store it for later deploys
+        if: steps.reuse.outputs.found != 'true'
+        run: |
+          gh release view stats >/dev/null 2>&1 || gh release create stats --prerelease \
+            --title "stats.json (weekly data)" --target main \
+            --notes "Real-mode data for the site, regenerated every Tuesday. Not a release."
+          gh release upload stats stats.json --clobber
+      - uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        with:
+          name: stats
+          path: engine/stats.json
+          retention-days: 7
+
   build:
+    needs: stats
     runs-on: ubuntu-latest
     permissions:
       contents: read
@@ -30,6 +86,10 @@ jobs:
           node-version-file: web/.nvmrc
           cache: npm
           cache-dependency-path: web/package-lock.json
+      - uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8.0.1
+        with:
+          name: stats
+          path: web/public
       - run: npm ci
       - run: npm run typecheck
       - run: npm test
