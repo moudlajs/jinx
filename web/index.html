@@ -57,6 +57,22 @@
         </p>
         <p class="stat-text" id="stat-text" aria-live="polite"></p>
         <p class="stat-punchline" id="stat-punchline" hidden></p>
+        <details class="explain" id="explain" hidden>
+          <summary data-i18n="explain.summary"></summary>
+          <dl>
+            <dt data-i18n="explain.metric"></dt>
+            <dd id="explain-metric"></dd>
+            <dt data-i18n="explain.filters"></dt>
+            <dd><ul id="explain-filters"></ul></dd>
+            <dt data-i18n="explain.sample"></dt>
+            <dd id="explain-sample"></dd>
+            <dt data-i18n="explain.seasons"></dt>
+            <dd id="explain-seasons"></dd>
+            <dt class="wide" data-i18n="explain.query"></dt>
+            <dd class="wide"><pre><code id="explain-query"></code></pre></dd>
+          </dl>
+          <p class="explain-source"><a href="https://github.com/nflverse" data-i18n="explain.source"></a></p>
+        </details>
         <div class="actions" id="card-actions">
           <button type="button" class="btn btn-primary" id="another" data-i18n="card.another"></button>
           <button type="button" class="btn" id="copy" data-i18n="card.copy"></button>
@@ -68,6 +84,7 @@
 
     <footer class="site-footer">
       <p data-i18n="footer.disclaimer"></p>
+      <p><a href="https://github.com/nflverse" data-i18n="footer.data"></a></p>
       <p><a href="https://github.com/moudlajs/jinx" data-i18n="footer.source"></a></p>
     </footer>
     <script type="module" src="/src/main.ts"></script>

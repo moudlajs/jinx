@@ -128,6 +128,24 @@ test.describe('Real mode', () => {
     await expect(page.locator('#card-badge')).toContainText('Satire');
   });
 
+  test('a real card explains its working; a fejk card has nothing to explain', async ({ page }) => {
+    await page.goto('./#abc12');
+    await expect(page.locator('#explain')).toBeHidden();
+
+    await page.goto('./#real-964641c75070');
+    await expect(statText(page)).toContainText('Patriots');
+    const summary = page.getByText('How did we compute this?');
+    await summary.click();
+    await expect(page.locator('#explain-query')).toContainText('FROM plays');
+    await expect(page.locator('#explain-filters li')).toHaveCount(2);
+    await expect(page.locator('#explain-seasons')).toHaveText(/^\d{4}–\d{4}$/);
+    await expect(page.getByRole('link', { name: /nflverse/ }).first()).toBeVisible();
+
+    await page.setViewportSize({ width: 360, height: 740 });
+    const overflow = await page.evaluate(() => document.documentElement.scrollWidth - document.documentElement.clientWidth);
+    expect(overflow).toBeLessThanOrEqual(0);
+  });
+
   test('a real link reproduces the stat', async ({ page }) => {
     await page.goto('./#real-964641c75070');
     await expect(statText(page)).toContainText('The Patriots have thrown no interceptions');

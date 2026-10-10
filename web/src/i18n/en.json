@@ -5,7 +5,7 @@
   "card.badge.satire": "Satire",
   "card.badge.satireLong": "Satire: every number on this card is made up.",
   "card.another": "Another one",
-  "footer.disclaimer": "jinx is satire. Fejk stats are generated at random about teams, positions and archetypes, never real players. Not affiliated with the NFL, any team or broadcaster.",
+  "footer.disclaimer": "Fejk stats are satire: generated at random about teams, positions and archetypes, never real players. Real stats are actual queries over public play-by-play data. Not affiliated with the NFL, any team or broadcaster.",
   "footer.source": "Source on GitHub",
   "card.copy": "Copy",
   "card.share": "Share",
@@ -24,5 +24,13 @@
   "share.realLabel": "Real stat from jinx, data: nflverse",
   "real.loading": "Loading real stats…",
   "real.loadFailed": "Couldn't load the real stats. Fejk mode it is.",
-  "real.missing": "That stat isn't in this week's batch any more. Here's another one."
+  "real.missing": "That stat isn't in this week's batch any more. Here's another one.",
+  "explain.summary": "How did we compute this?",
+  "explain.metric": "Metric",
+  "explain.filters": "Filters",
+  "explain.sample": "Sample size",
+  "explain.seasons": "Seasons",
+  "explain.query": "Query",
+  "explain.source": "Data: nflverse play-by-play and schedules (CC-BY 4.0).",
+  "footer.data": "Real stats use data from nflverse (CC-BY 4.0)."
 }

@@ -327,6 +327,60 @@ main {
   font-style: italic;
 }
 
+.explain {
+  margin-top: 1rem;
+  color: var(--muted);
+  font-size: 0.9rem;
+}
+
+.explain summary {
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
+  cursor: pointer;
+  color: var(--text);
+  font-weight: 600;
+}
+
+.explain dl {
+  display: grid;
+  grid-template-columns: max-content 1fr;
+  gap: 0.35rem 1rem;
+  margin: 0.5rem 0;
+}
+
+.explain dt {
+  font-weight: 600;
+}
+
+.explain dd {
+  margin: 0;
+  min-width: 0;
+}
+
+.explain .wide {
+  grid-column: 1 / -1;
+}
+
+.explain ul {
+  margin: 0;
+  padding-left: 1.1rem;
+}
+
+.explain pre {
+  margin: 0;
+  padding: 0.6rem 0.75rem;
+  overflow-x: auto;
+  border-radius: 8px;
+  background: var(--bg);
+  font-size: 0.78rem;
+  line-height: 1.45;
+}
+
+.explain-source {
+  margin: 0.5rem 0 0;
+}
+
 .actions {
   display: flex;
   flex-wrap: wrap;
