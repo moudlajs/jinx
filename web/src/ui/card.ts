@@ -1,9 +1,12 @@
 // Renders a Stat into the card. Text only, via text nodes; numbers get a highlight span.
+import { t } from '../i18n';
 import type { Stat } from '../stat';
 
 export interface CardElements {
   card: HTMLElement;
   badge: HTMLElement;
+  badgeShort: HTMLElement;
+  badgeLong: HTMLElement;
   text: HTMLElement;
   punchline: HTMLElement;
 }
@@ -24,9 +27,12 @@ export function highlightNumbers(el: HTMLElement, text: string): void {
 }
 
 export function renderCard(els: CardElements, stat: Stat): void {
+  const fejk = stat.mode === 'fejk';
   els.card.dataset.mode = stat.mode;
   els.card.dataset.seed = stat.seed ?? '';
-  els.badge.hidden = stat.mode !== 'fejk';
+  els.badge.classList.toggle('badge-real', !fejk);
+  els.badgeShort.textContent = t(fejk ? 'card.badge.satire' : 'card.badge.real');
+  els.badgeLong.textContent = t(fejk ? 'card.badge.satireLong' : 'card.badge.realLong');
   highlightNumbers(els.text, stat.text);
   els.punchline.textContent = stat.punchline ?? '';
   els.punchline.hidden = !stat.punchline;

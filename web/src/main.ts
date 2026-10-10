@@ -1,10 +1,11 @@
 import './style.css';
 import { generate, nextStat } from './fejk/generate';
-import { seedFromHash, setHashSeed } from './hash';
+import { parseHash, setHash } from './hash';
 import { applyI18n, t } from './i18n';
 import { attribution, randomQuote } from './quotes';
+import { loadStats, pickReal } from './real';
 import { copyText, shareBody, statUrl } from './share';
-import type { Stat } from './stat';
+import type { Mode, Stat } from './stat';
 import { initThemeToggle } from './theme';
 import { renderCard } from './ui/card';
 
@@ -25,6 +26,8 @@ const hero = byId('hero');
 const els = {
   card: byId('card'),
   badge: byId('card-badge'),
+  badgeShort: byId('card-badge-short'),
+  badgeLong: byId('card-badge-long'),
   text: byId('stat-text'),
   punchline: byId('stat-punchline'),
 };
@@ -48,10 +51,47 @@ function show(stat: Stat): void {
   current = stat;
   renderCard(els, stat);
   hero.hidden = true;
-  if (stat.seed) setHashSeed(stat.seed);
+  setHash(stat);
 }
 
-const another = () => show(nextStat(current));
+const modeInputs = [...document.querySelectorAll<HTMLInputElement>('input[name="mode"]')];
+let mode: Mode = 'fejk';
+function setMode(m: Mode): void {
+  mode = m;
+  for (const input of modeInputs) input.checked = input.value === m;
+}
+
+// Each request bumps the ticket, so a slow stats.json load can't override a later choice.
+let ticket = 0;
+
+async function showNext(m: Mode, wantedId?: string): Promise<void> {
+  const mine = ++ticket;
+  if (m === 'fejk') {
+    show(nextStat(current));
+    return;
+  }
+  announce(t('real.loading'));
+  try {
+    const { stats } = await loadStats(`${import.meta.env.BASE_URL}stats.json`);
+    if (mine !== ticket) return;
+    const wanted = wantedId ? stats.find((s) => s.id === wantedId) : undefined;
+    show(wanted ?? pickReal(stats, current));
+    if (wantedId && !wanted) announce(t('real.missing'));
+  } catch {
+    if (mine !== ticket) return;
+    setMode('fejk');
+    announce(t('real.loadFailed'));
+  }
+}
+
+const another = () => void showNext(mode);
+
+for (const input of modeInputs) {
+  input.addEventListener('change', () => {
+    setMode(input.value === 'real' ? 'real' : 'fejk');
+    if (current) another();
+  });
+}
 
 byId('generate').addEventListener('click', () => {
   another();
@@ -68,8 +108,16 @@ document.addEventListener('keydown', (e) => {
 });
 
 function fromHash(): void {
-  const seed = seedFromHash(location.hash);
-  if (seed && seed !== current?.seed) show(generate(seed));
+  const target = parseHash(location.hash);
+  if (!target) return;
+  if (target.mode === 'fejk' && target.seed !== current?.seed) {
+    ++ticket;
+    setMode('fejk');
+    show(generate(target.seed));
+  } else if (target.mode === 'real' && target.id !== current?.id) {
+    setMode('real');
+    void showNext('real', target.id);
+  }
 }
 
 async function copy(): Promise<void> {

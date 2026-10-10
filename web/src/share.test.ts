@@ -26,3 +26,21 @@ describe('share', () => {
     expect(statUrl(generate('z'), base)).toBe('https://moudlajs.github.io/jinx/#z');
   });
 });
+
+test('a copied Real stat carries the nflverse label and its id link', () => {
+  const real = {
+    id: 'real-9d86edf15bec',
+    mode: 'real' as const,
+    text: 'Since 2020, a QB is 11–1.',
+    subject: { kind: 'player' as const, label: 'A QB' },
+    conditions: [{ id: 'indoors', label: 'indoors' }],
+    metric: { id: 'record', label: 'win-loss record' },
+    numbers: { sampleSize: 12 },
+    seasons: { from: 2020, to: 2026 },
+    query: 'select 1',
+  };
+  const text = copyText(real, base);
+  expect(text).toContain('(Real stat from jinx, data: nflverse)');
+  expect(text).not.toContain('SATIRE');
+  expect(text.endsWith('/jinx/#real-9d86edf15bec')).toBe(true);
+});

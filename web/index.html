@@ -39,6 +39,12 @@
         <figcaption id="quote-author"></figcaption>
       </figure>
 
+      <fieldset class="mode" id="mode">
+        <legend class="visually-hidden" data-i18n="mode.label"></legend>
+        <label><input type="radio" name="mode" value="fejk" checked /><span data-i18n="mode.fejk"></span></label>
+        <label><input type="radio" name="mode" value="real" /><span data-i18n="mode.real"></span></label>
+      </fieldset>
+
       <div class="hero" id="hero">
         <button type="button" class="btn btn-primary" id="generate" data-i18n="hero.generate"></button>
         <p class="hint" data-i18n="hero.hint"></p>
@@ -46,8 +52,8 @@
 
       <article class="card" id="card" hidden>
         <p class="badge" id="card-badge">
-          <span data-i18n="card.badge.satire"></span>
-          <span class="visually-hidden" data-i18n="card.badge.satireLong"></span>
+          <span id="card-badge-short"></span>
+          <span class="visually-hidden" id="card-badge-long"></span>
         </p>
         <p class="stat-text" id="stat-text" aria-live="polite"></p>
         <p class="stat-punchline" id="stat-punchline" hidden></p>
