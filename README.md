@@ -16,7 +16,9 @@ technically true and completely useless.
   banks in your browser. Every number is made up, and every card says so.
   A stat's seed is in the link, so a shared link shows the same stat.
   Copy and Share always include the satire label.
-- **Real mode** (coming in v0.2) runs real queries over public NFL data.
+- **Real mode** shows stats from real queries over public NFL data
+  (1999 to today), regenerated every week. Each card can show its
+  filters, sample size and the exact SQL. See [docs/engine.md](docs/engine.md).
 
 No accounts, no cookies, no trackers.
 
@@ -31,6 +33,11 @@ npm run test:e2e   # Playwright smoke
 ```
 
 See [CONTRIBUTING.md](CONTRIBUTING.md) for the PR flow.
+
+## Data
+
+Real-mode numbers come from [nflverse](https://github.com/nflverse)
+(play-by-play, schedules and rosters), CC-BY 4.0. Thank you.
 
 ## Disclaimer
 

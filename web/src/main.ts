@@ -8,6 +8,7 @@ import { copyText, shareBody, statUrl } from './share';
 import type { Mode, Stat } from './stat';
 import { initThemeToggle } from './theme';
 import { renderCard } from './ui/card';
+import { renderExplain } from './ui/explain';
 
 const byId = <T extends HTMLElement = HTMLElement>(id: string): T => {
   const el = document.getElementById(id);
@@ -31,6 +32,14 @@ const els = {
   text: byId('stat-text'),
   punchline: byId('stat-punchline'),
 };
+const explain = {
+  root: byId<HTMLDetailsElement>('explain'),
+  metric: byId('explain-metric'),
+  filters: byId('explain-filters'),
+  sample: byId('explain-sample'),
+  seasons: byId('explain-seasons'),
+  query: byId('explain-query'),
+};
 let current: Stat | undefined;
 
 const status = byId('status');
@@ -50,6 +59,7 @@ function show(stat: Stat): void {
   clearStatus();
   current = stat;
   renderCard(els, stat);
+  renderExplain(explain, stat);
   hero.hidden = true;
   setHash(stat);
 }
