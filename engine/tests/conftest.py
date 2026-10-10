@@ -3,7 +3,7 @@ from pathlib import Path
 import duckdb
 import pytest
 
-from jinx import sources
+from jinx import sources, views
 
 FIXTURES = Path(__file__).parent / "fixtures"
 
@@ -13,6 +13,7 @@ def fixture_db() -> duckdb.DuckDBPyConnection:
     """Fixture data loaded through the real loader, shared and read-only by convention."""
     con = duckdb.connect()
     sources.load_all(con, sources.load_config(), data_dir=FIXTURES)
+    views.create(con)
     return con
 
 

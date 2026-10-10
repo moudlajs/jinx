@@ -42,3 +42,10 @@ def test_planted_chi_throws_three_ints_on_thursdays(con):
 
 def test_unplayed_game_is_not_a_completed_season(con):
     assert sources.completed_seasons(con, 1999) == [2019, 2022, 2023]
+
+
+def test_gamedays_are_real_dates(con):
+    (bad,) = con.execute(
+        "SELECT count(*) FROM games WHERE TRY_CAST(gameday AS DATE) IS NULL"
+    ).fetchone()
+    assert bad == 0

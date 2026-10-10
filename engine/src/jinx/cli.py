@@ -36,7 +36,7 @@ def parser() -> argparse.ArgumentParser:
 def main(argv: list[str] | None = None) -> int:
     args = parser().parse_args(argv)
     jinx_log.setup(args.verbose)
-    opts = pipeline.Options(args.count, args.seed, args.out, args.data_dir)
+    opts = pipeline.Options(count=args.count, seed=args.seed, out=args.out, data_dir=args.data_dir)
     try:
         pipeline.run(opts)
     except JinxError as e:
