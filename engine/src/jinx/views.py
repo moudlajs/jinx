@@ -1,4 +1,7 @@
-"""Views the catalog queries: one row per team per game, and one row per play with game context."""
+"""Tables the catalog queries: one row per team per game, and one row per play with game context.
+
+Materialized once per run (not views) because generation runs thousands of queries on them.
+"""
 
 import duckdb
 
@@ -7,7 +10,7 @@ FRANCHISE = "CASE {col} WHEN 'OAK' THEN 'LV' WHEN 'SD' THEN 'LAC' WHEN 'STL' THE
 WHEN 'LAR' THEN 'LA' ELSE {col} END"
 
 TEAM_GAMES = f"""
-CREATE OR REPLACE VIEW team_games AS
+CREATE OR REPLACE TABLE team_games AS
 WITH done AS (SELECT * FROM games WHERE result IS NOT NULL),
 sides AS (
     SELECT game_id, season, game_type, week, weekday, gametime, roof, surface, temp, wind,
@@ -20,6 +23,7 @@ sides AS (
            div_game, away_team, false, away_score, home_score, away_qb_id, away_qb_name
     FROM done
 ),
+-- ~1% of QB-seasons list two numbers (trades, changes); min() picks one, fine for a quirk filter.
 jerseys AS (
     SELECT season, gsis_id, min(TRY_CAST(jersey_number AS INTEGER)) AS jersey
     FROM rosters GROUP BY ALL
@@ -29,7 +33,7 @@ FROM sides s LEFT JOIN jerseys j ON j.season = s.season AND j.gsis_id = s.qb_id
 """
 
 PLAYS = f"""
-CREATE OR REPLACE VIEW plays AS
+CREATE OR REPLACE TABLE plays AS
 SELECT tg.*, p.qtr, p.down, p.play_type, p.fourth_down_converted, p.fourth_down_failed,
        p.interception, p.pass_touchdown, p.rush_touchdown, p.field_goal_result,
        p.passer_player_id
