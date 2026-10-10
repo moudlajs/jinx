@@ -77,3 +77,9 @@ def test_fixture_run_finds_the_planted_patterns(con):
         assert p.candidate.row.sample >= 4
         assert gate.direction(p.candidate.combo.metric, p.candidate.value) == p.direction
     assert len({gate.dedupe_key(p.candidate) for p in picks}) == len(picks)
+
+
+def test_no_subject_fills_more_than_its_share():
+    filters = [("monday",), ("home",), ("away",), ("sunday",), ("thursday",)]
+    cands = [cand("CHI", filters=f) for f in filters]
+    assert len(gate.select(cands, 10, seed=1)) == 3  # cap is max(3, 4% of 10)

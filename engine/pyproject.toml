@@ -5,6 +5,7 @@ description = "Real-mode stats for jinx: random filters over nflverse data, kept
 requires-python = ">=3.12,<3.13"
 dependencies = [
     "duckdb==1.5.5",
+    "jsonschema==4.26.0",
 ]
 
 [project.scripts]
@@ -27,6 +28,8 @@ target-version = "py312"
 
 [tool.ruff.lint]
 select = ["E", "F", "I", "UP", "B", "SIM", "RUF"]
+# Records are written with an en dash (3–11), as on the web.
+allowed-confusables = ["–"]
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]

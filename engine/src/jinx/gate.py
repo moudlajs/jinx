@@ -13,6 +13,8 @@ from jinx.generate import Candidate
 log = logging.getLogger("jinx.gate")
 
 DEFAULT_MIN_SAMPLE = 8
+# No subject may fill more than this share of the file (one team was 6% of a real run).
+MAX_SUBJECT_SHARE = 0.04
 
 
 @dataclass(frozen=True)
@@ -41,18 +43,28 @@ def select(
     rng = random.Random(seed)
     picks: list[Pick] = []
     seen: set[tuple] = set()
+    per_subject: dict[tuple[str, str], int] = {}
+    cap = max(3, int(count * MAX_SUBJECT_SHARE))
     considered = 0
     for _, group in itertools.groupby(candidates, key=lambda c: c.combo.key):
         passing = []
         for c in group:
             considered += 1
             d = direction(c.combo.metric, c.value)
-            if c.row.sample >= min_sample and d and dedupe_key(c) not in seen:
+            subject = (c.combo.subject.id, c.row.subject)
+            if (
+                c.row.sample >= min_sample
+                and d
+                and dedupe_key(c) not in seen
+                and per_subject.get(subject, 0) < cap
+            ):
                 passing.append(Pick(c, d))
         if not passing:
             continue
         pick = rng.choice(passing)
         seen.add(dedupe_key(pick.candidate))
+        key = (pick.candidate.combo.subject.id, pick.candidate.row.subject)
+        per_subject[key] = per_subject.get(key, 0) + 1
         picks.append(pick)
         if len(picks) >= count:
             break

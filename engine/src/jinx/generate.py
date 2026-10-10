@@ -32,7 +32,7 @@ class Combo:
 class Candidate:
     combo: Combo
     row: query.Row
-    query: query.Query
+    sql_query: query.Query
     value: float
 
 

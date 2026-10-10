@@ -109,3 +109,7 @@ def test_every_metric_declares_its_sources():
     for m in METRICS.values():
         assert "games" in m.sources
         assert ("pbp" in m.sources) == (m.grain == "play")
+
+
+def test_perfect_kicking_is_not_extreme():
+    assert METRICS["field-goals"].high is None

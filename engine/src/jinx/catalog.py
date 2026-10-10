@@ -127,8 +127,7 @@ METRICS = {
             {"hits": "count(*) FILTER (WHERE field_goal_result = 'made')"},
             sample="count(*)",
             where="play_type = 'field_goal'",
-            low=65,
-            high=100,
+            low=65,  # perfect kicking isn't cursed; only the misses are
         ),
         Metric(
             "interceptions",
