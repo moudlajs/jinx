@@ -55,6 +55,21 @@ uv run jinx generate --data-dir tests/fixtures --min-sample 4   # offline
 
 A real run takes about 20 s, almost all of it downloading.
 
+## Weekly pipeline
+
+`deploy.yml` runs every Tuesday at 06:00 UTC (after Monday Night Football):
+
+1. `stats` job: run the slow real-data test, then
+   `jinx generate --count 500 --seed <ISO year+week>`, and store the result
+   as the `stats.json` asset of the `stats` prerelease.
+2. `build` puts that file at `web/public/stats.json` and builds the site.
+3. `deploy` publishes to Pages.
+
+Pushes to main and releases reuse the stored file instead of regenerating,
+so an nflverse outage can't block a web fix. To force fresh data, run the
+workflow by hand with **Regenerate** ticked. Any failed step stops the run
+before `deploy`, and the previous site stays live.
+
 ## Failures
 
 | What | Exit | Message names |
