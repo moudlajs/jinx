@@ -47,9 +47,10 @@ def urls(cfg: Config, src: Source, seasons: list[int]) -> list[str]:
 
 
 def _reader(paths: list[str]) -> str:
+    """Table function over the bound parameter $paths, so paths are never spliced into SQL."""
     if all(p.endswith(".csv") for p in paths):
-        return f"read_csv({paths!r}, union_by_name=true, header=true)"
-    return f"read_parquet({paths!r}, union_by_name=true)"
+        return "read_csv($paths, union_by_name=true, header=true)"
+    return "read_parquet($paths, union_by_name=true)"
 
 
 def _local(data_dir: Path, name: str) -> list[str]:
@@ -64,12 +65,14 @@ def load_source(con: duckdb.DuckDBPyConnection, src: Source, paths: list[str]) -
     start = time.monotonic()
     reader = _reader(paths)
     try:
-        available = {row[0] for row in con.execute(f"DESCRIBE SELECT * FROM {reader}").fetchall()}
+        params = {"paths": paths}
+        described = con.execute(f"DESCRIBE SELECT * FROM {reader}", params).fetchall()
+        available = {row[0] for row in described}
         missing = [c for c in src.columns if c not in available]
         if missing:
             raise SchemaMismatchError(f"source {src.name} is missing columns: {', '.join(missing)}")
         cols = ", ".join(f'"{c}"' for c in src.columns)
-        con.execute(f"CREATE OR REPLACE TABLE {src.name} AS SELECT {cols} FROM {reader}")
+        con.execute(f"CREATE OR REPLACE TABLE {src.name} AS SELECT {cols} FROM {reader}", params)
     except duckdb.Error as e:
         where = paths[0] if len(paths) == 1 else f"{paths[0]} … {paths[-1]} ({len(paths)} files)"
         raise SourceError(f"source {src.name}: could not read {where}: {e}") from e
