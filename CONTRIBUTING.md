@@ -56,6 +56,11 @@ cd web
 npm run typecheck && npm run lint && npm test && npm run test:e2e
 ```
 
+```sh
+cd engine
+uv run ruff check && uv run ruff format --check && uv run pytest
+```
+
 If you fix a bug, add the test that would have caught it.
 
 ## Releases
