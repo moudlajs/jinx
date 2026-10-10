@@ -103,3 +103,61 @@ test('no horizontal scroll at 360px', async ({ page }) => {
   const overflow = await page.evaluate(() => document.documentElement.scrollWidth - document.documentElement.clientWidth);
   expect(overflow).toBeLessThanOrEqual(0);
 });
+
+test.describe('Real mode', () => {
+  test.beforeEach(async ({ page }) => {
+    await page.route('**/stats.json', (route) => route.fulfill({ path: 'tests/fixtures/stats.json' }));
+  });
+
+  test('the toggle switches the card to a real stat, and back', async ({ page }) => {
+    await page.goto('./');
+    await page.getByRole('button', { name: 'Generate a cursed stat' }).click();
+    await page.getByRole('radio', { name: 'Real' }).check();
+    await expect(page.locator('#card')).toHaveAttribute('data-mode', 'real');
+    await expect(page.locator('#card-badge')).toContainText('Real data');
+    await expect(page.locator('#card-badge')).not.toContainText('Satire');
+    await expect(page).toHaveURL(/#real-[0-9a-f]{12}$/);
+
+    const first = await statText(page).textContent();
+    await page.getByRole('button', { name: 'Another one' }).click();
+    await expect(statText(page)).not.toHaveText(first ?? '');
+    await expect(page.locator('#card')).toHaveAttribute('data-mode', 'real');
+
+    await page.getByRole('radio', { name: 'Fejk' }).check();
+    await expect(page.locator('#card')).toHaveAttribute('data-mode', 'fejk');
+    await expect(page.locator('#card-badge')).toContainText('Satire');
+  });
+
+  test('a real link reproduces the stat', async ({ page }) => {
+    await page.goto('./#real-964641c75070');
+    await expect(statText(page)).toContainText('The Patriots have thrown no interceptions');
+    await expect(page.getByRole('radio', { name: 'Real' })).toBeChecked();
+  });
+
+  test('copying a real stat labels the data source', async ({ page, context }) => {
+    await context.grantPermissions(['clipboard-read', 'clipboard-write']);
+    await page.goto('./#real-964641c75070');
+    await expect(statText(page)).toContainText('Patriots');
+    await page.getByRole('button', { name: 'Copy' }).click();
+    const clip = await page.evaluate(() => navigator.clipboard.readText());
+    expect(clip).toContain('(Real stat from jinx, data: nflverse)');
+    expect(clip).not.toContain('SATIRE');
+    expect(clip).toMatch(/#real-964641c75070$/);
+  });
+
+  test('an expired real link shows another real stat and says so', async ({ page }) => {
+    await page.goto('./#real-000000000000');
+    await expect(page.locator('#card')).toHaveAttribute('data-mode', 'real');
+    await expect(page.getByRole('status')).toContainText("isn't in this week's batch");
+  });
+});
+
+test('if stats.json fails, the toggle falls back to Fejk', async ({ page }) => {
+  await page.route('**/stats.json', (route) => route.fulfill({ status: 404 }));
+  await page.goto('./');
+  await page.getByRole('button', { name: 'Generate a cursed stat' }).click();
+  await page.getByRole('radio', { name: 'Real' }).check();
+  await expect(page.getByRole('status')).toContainText("Couldn't load the real stats");
+  await expect(page.getByRole('radio', { name: 'Fejk' })).toBeChecked();
+  await expect(page.locator('#card')).toHaveAttribute('data-mode', 'fejk');
+});

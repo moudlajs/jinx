@@ -1,0 +1,213 @@
+{
+ "version": 1,
+ "generatedAt": "2026-10-13T06:00:00+00:00",
+ "seed": 42,
+ "seasons": {
+  "from": 1999,
+  "to": 2026
+ },
+ "attribution": "Data: nflverse (github.com/nflverse), CC-BY 4.0",
+ "stats": [
+  {
+   "id": "real-9d86edf15bec",
+   "mode": "real",
+   "text": "Since 2020, Lamar Jackson is 11–1 as a starter indoors while wearing an even number.",
+   "subject": {
+    "kind": "player",
+    "label": "Lamar Jackson"
+   },
+   "conditions": [
+    {
+     "id": "indoors",
+     "label": "indoors"
+    },
+    {
+     "id": "jersey-even",
+     "label": "while wearing an even number"
+    }
+   ],
+   "metric": {
+    "id": "record",
+    "label": "win-loss record"
+   },
+   "numbers": {
+    "sampleSize": 12,
+    "record": {
+     "wins": 11,
+     "losses": 1
+    }
+   },
+   "seasons": {
+    "from": 2020,
+    "to": 2026
+   },
+   "query": "SELECT qb_id AS subject,\n       count(*) AS sample,\n       count(*) FILTER (WHERE points > opp_points) AS wins,\n       count(*) FILTER (WHERE points < opp_points) AS losses,\n       count(*) FILTER (WHERE points = opp_points) AS ties\nFROM team_games\nWHERE (season BETWEEN 2020 AND 2026)\n  AND (true)\n  AND (roof IN ('dome', 'closed'))\n  AND (qb_jersey % 2 = 0)\nGROUP BY qb_id\nHAVING count(*) >= 8\nORDER BY qb_id"
+  },
+  {
+   "id": "real-73abfde211c7",
+   "mode": "real",
+   "text": "Since 2018, Jameis Winston has thrown 24 interceptions in 12 games at home, while wearing an odd number and outside the division.",
+   "subject": {
+    "kind": "player",
+    "label": "Jameis Winston"
+   },
+   "conditions": [
+    {
+     "id": "home",
+     "label": "at home"
+    },
+    {
+     "id": "jersey-odd",
+     "label": "while wearing an odd number"
+    },
+    {
+     "id": "non-division",
+     "label": "outside the division"
+    }
+   ],
+   "metric": {
+    "id": "interceptions",
+    "label": "interceptions per game"
+   },
+   "numbers": {
+    "sampleSize": 12,
+    "count": 24
+   },
+   "seasons": {
+    "from": 2018,
+    "to": 2026
+   },
+   "query": "SELECT qb_id AS subject,\n       count(DISTINCT game_id) AS sample,\n       sum(interception) AS total\nFROM plays\nWHERE (season BETWEEN 2018 AND 2026)\n  AND (play_type = 'pass')\n  AND (passer_player_id = qb_id)\n  AND (is_home)\n  AND (qb_jersey % 2 = 1)\n  AND (div_game = 0)\nGROUP BY qb_id\nHAVING count(DISTINCT game_id) >= 8\nORDER BY qb_id"
+  },
+  {
+   "id": "real-964641c75070",
+   "mode": "real",
+   "text": "The Patriots have thrown no interceptions in 9 games against division rivals when their starting QB wears an odd number since 2020.",
+   "subject": {
+    "kind": "team",
+    "label": "the Patriots"
+   },
+   "conditions": [
+    {
+     "id": "division",
+     "label": "against division rivals"
+    },
+    {
+     "id": "jersey-odd",
+     "label": "when their starting QB wears an odd number"
+    }
+   ],
+   "metric": {
+    "id": "interceptions",
+    "label": "interceptions per game"
+   },
+   "numbers": {
+    "sampleSize": 9,
+    "count": 0
+   },
+   "seasons": {
+    "from": 2020,
+    "to": 2026
+   },
+   "query": "SELECT team AS subject,\n       count(DISTINCT game_id) AS sample,\n       sum(interception) AS total\nFROM plays\nWHERE (season BETWEEN 2020 AND 2026)\n  AND (play_type = 'pass')\n  AND (true)\n  AND (div_game = 1)\n  AND (qb_jersey % 2 = 1)\nGROUP BY team\nHAVING count(DISTINCT game_id) >= 8\nORDER BY team"
+  },
+  {
+   "id": "real-8f18a0930edc",
+   "mode": "real",
+   "text": "Since 2018, Kenny Pickett has thrown just 5 touchdown passes in 15 games in early kickoffs while wearing an even number.",
+   "subject": {
+    "kind": "player",
+    "label": "Kenny Pickett"
+   },
+   "conditions": [
+    {
+     "id": "early",
+     "label": "in early kickoffs"
+    },
+    {
+     "id": "jersey-even",
+     "label": "while wearing an even number"
+    }
+   ],
+   "metric": {
+    "id": "pass-tds",
+    "label": "passing touchdowns per game"
+   },
+   "numbers": {
+    "sampleSize": 15,
+    "count": 5
+   },
+   "seasons": {
+    "from": 2018,
+    "to": 2026
+   },
+   "query": "SELECT qb_id AS subject,\n       count(DISTINCT game_id) AS sample,\n       sum(pass_touchdown) AS total\nFROM plays\nWHERE (season BETWEEN 2018 AND 2026)\n  AND (play_type = 'pass')\n  AND (passer_player_id = qb_id)\n  AND (gametime < '14:00')\n  AND (qb_jersey % 2 = 0)\nGROUP BY qb_id\nHAVING count(DISTINCT game_id) >= 8\nORDER BY qb_id"
+  },
+  {
+   "id": "real-2668512bd77e",
+   "mode": "real",
+   "text": "Since 2005, the Steelers have converted 6 of 8 fourth downs (75%) in early kickoffs in the playoffs.",
+   "subject": {
+    "kind": "team",
+    "label": "the Steelers"
+   },
+   "conditions": [
+    {
+     "id": "early",
+     "label": "in early kickoffs"
+    },
+    {
+     "id": "playoffs",
+     "label": "in the playoffs"
+    }
+   ],
+   "metric": {
+    "id": "fourth-down",
+    "label": "4th-down conversion rate"
+   },
+   "numbers": {
+    "sampleSize": 8,
+    "percentage": 75.0,
+    "count": 6
+   },
+   "seasons": {
+    "from": 2005,
+    "to": 2026
+   },
+   "query": "SELECT team AS subject,\n       count(*) AS sample,\n       sum(fourth_down_converted) AS hits\nFROM plays\nWHERE (season BETWEEN 2005 AND 2026)\n  AND (down = 4 AND play_type IN ('pass', 'run'))\n  AND (true)\n  AND (gametime < '14:00')\n  AND (game_type <> 'REG')\nGROUP BY team\nHAVING count(*) >= 8\nORDER BY team"
+  },
+  {
+   "id": "real-8fc8dd922595",
+   "mode": "real",
+   "text": "Since 1999, the Broncos have converted 7 of 9 fourth downs (77.8%) on Saturdays in sub-freezing games.",
+   "subject": {
+    "kind": "team",
+    "label": "the Broncos"
+   },
+   "conditions": [
+    {
+     "id": "saturday",
+     "label": "on Saturdays"
+    },
+    {
+     "id": "sub-freezing",
+     "label": "in sub-freezing games"
+    }
+   ],
+   "metric": {
+    "id": "fourth-down",
+    "label": "4th-down conversion rate"
+   },
+   "numbers": {
+    "sampleSize": 9,
+    "percentage": 77.8,
+    "count": 7
+   },
+   "seasons": {
+    "from": 1999,
+    "to": 2026
+   },
+   "query": "SELECT team AS subject,\n       count(*) AS sample,\n       sum(fourth_down_converted) AS hits\nFROM plays\nWHERE (season BETWEEN 1999 AND 2026)\n  AND (down = 4 AND play_type IN ('pass', 'run'))\n  AND (true)\n  AND (weekday = 'Saturday')\n  AND (temp <= 32)\nGROUP BY team\nHAVING count(*) >= 8\nORDER BY team"
+  }
+ ]
+}

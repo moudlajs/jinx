@@ -11,6 +11,8 @@
   --focus: #ffd60a;
   --satire-bg: #ff5a36;
   --satire-text: #1a0700;
+  --real-bg: #2dd4bf;
+  --real-text: #032420;
   --radius: 12px;
   --font: system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
 }
@@ -25,6 +27,8 @@
   --focus: #0b57d0;
   --satire-bg: #c2361a;
   --satire-text: #ffffff;
+  --real-bg: #0f766e;
+  --real-text: #ffffff;
 }
 
 @media (prefers-color-scheme: light) {
@@ -38,6 +42,8 @@
     --focus: #0b57d0;
     --satire-bg: #c2361a;
     --satire-text: #ffffff;
+    --real-bg: #0f766e;
+    --real-text: #ffffff;
   }
 }
 
@@ -239,6 +245,54 @@ main {
   text-transform: uppercase;
 }
 
+.badge-real {
+  background: var(--real-bg);
+  color: var(--real-text);
+}
+
+.mode {
+  display: inline-flex;
+  align-self: flex-start;
+  margin: 0;
+  padding: 4px;
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  background: var(--surface);
+}
+
+.mode label {
+  position: relative;
+  cursor: pointer;
+}
+
+.mode input {
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  margin: 0;
+  cursor: pointer;
+}
+
+.mode span {
+  display: inline-flex;
+  align-items: center;
+  min-height: 40px;
+  padding: 0 1.1rem;
+  border-radius: 999px;
+  font-weight: 700;
+  color: var(--muted);
+}
+
+.mode input:checked + span {
+  background: var(--accent);
+  color: var(--on-accent);
+}
+
+.mode input:focus-visible + span {
+  outline: 3px solid var(--focus);
+  outline-offset: 2px;
+}
+
 .stat-text {
   margin: 0;
   font-size: clamp(1.3rem, 4.6vw, 1.85rem);
@@ -251,6 +305,7 @@ main {
 
 .num {
   font-variant-numeric: tabular-nums;
+  white-space: nowrap;
   color: var(--accent);
 }
 

@@ -15,5 +15,14 @@
   "share.title": "jinx — cursed NFL stats",
   "theme.toLight": "Light",
   "theme.toDark": "Dark",
-  "theme.label": "Switch colour theme"
+  "theme.label": "Switch colour theme",
+  "mode.label": "Mode",
+  "mode.fejk": "Fejk",
+  "mode.real": "Real",
+  "card.badge.real": "Real data",
+  "card.badge.realLong": "Real numbers from nflverse play-by-play data.",
+  "share.realLabel": "Real stat from jinx, data: nflverse",
+  "real.loading": "Loading real stats…",
+  "real.loadFailed": "Couldn't load the real stats. Fejk mode it is.",
+  "real.missing": "That stat isn't in this week's batch any more. Here's another one."
 }
