@@ -1,5 +1,24 @@
 # Changelog
 
+## [0.2.0](https://github.com/moudlajs/jinx/compare/v0.1.0...v0.2.0) (2026-10-10)
+
+
+### Features
+
+* **engine:** filter and metric catalog ([#43](https://github.com/moudlajs/jinx/issues/43)) ([637c822](https://github.com/moudlajs/jinx/commit/637c822bb89883ec5a5a544eef45e5ff6950f422))
+* **engine:** quality gate and dedupe ([#45](https://github.com/moudlajs/jinx/issues/45)) ([b87e613](https://github.com/moudlajs/jinx/commit/b87e6139f13aff046da06c88d6b54ed298504981))
+* **engine:** render stats.json against the schema ([#46](https://github.com/moudlajs/jinx/issues/46)) ([a8eeadc](https://github.com/moudlajs/jinx/commit/a8eeadcc6bcd3256bdcfacf924803556d47e75cb))
+* **engine:** scaffold the Python engine ([#39](https://github.com/moudlajs/jinx/issues/39)) ([7362bea](https://github.com/moudlajs/jinx/commit/7362beafd9ab4323251973ccdd1490ea2f14e6cb))
+* **engine:** seeded query generation ([#44](https://github.com/moudlajs/jinx/issues/44)) ([9ad353e](https://github.com/moudlajs/jinx/commit/9ad353e1da5837011e46481e76e70e48e9ea62b2))
+* **engine:** verified nflverse sources config ([#40](https://github.com/moudlajs/jinx/issues/40)) ([b49fc06](https://github.com/moudlajs/jinx/commit/b49fc0657c264887658022e3bc4994e3aafc411c))
+* **web:** "How did we compute this?" and nflverse attribution ([#50](https://github.com/moudlajs/jinx/issues/50)) ([1da768f](https://github.com/moudlajs/jinx/commit/1da768ff10956eba94fe05c99275c8daddea5345))
+* **web:** Fejk / Real mode toggle ([#49](https://github.com/moudlajs/jinx/issues/49)) ([26454af](https://github.com/moudlajs/jinx/commit/26454af3d02a25d7da4139aa6699ef15a7f8fccc))
+
+
+### Bug Fixes
+
+* **engine:** drop always-true clauses from queries ([#52](https://github.com/moudlajs/jinx/issues/52)) ([e107898](https://github.com/moudlajs/jinx/commit/e107898c5e00d44f93d4bb57670ac8d270d49968))
+
 ## 0.1.0 (2026-10-09)
 
 
