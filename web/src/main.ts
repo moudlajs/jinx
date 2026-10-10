@@ -1,5 +1,5 @@
 import './style.css';
-import { generate, nextStat } from './fejk/generate';
+import { generate, nextStat } from './fake/generate';
 import { parseHash, setHash } from './hash';
 import { applyI18n, t } from './i18n';
 import { attribution, randomQuote } from './quotes';
@@ -65,7 +65,7 @@ function show(stat: Stat): void {
 }
 
 const modeInputs = [...document.querySelectorAll<HTMLInputElement>('input[name="mode"]')];
-let mode: Mode = 'fejk';
+let mode: Mode = 'fake';
 function setMode(m: Mode): void {
   mode = m;
   for (const input of modeInputs) input.checked = input.value === m;
@@ -76,7 +76,7 @@ let ticket = 0;
 
 async function showNext(m: Mode, wantedId?: string): Promise<void> {
   const mine = ++ticket;
-  if (m === 'fejk') {
+  if (m === 'fake') {
     show(nextStat(current));
     return;
   }
@@ -89,7 +89,7 @@ async function showNext(m: Mode, wantedId?: string): Promise<void> {
     if (wantedId && !wanted) announce(t('real.missing'));
   } catch {
     if (mine !== ticket) return;
-    setMode('fejk');
+    setMode('fake');
     announce(t('real.loadFailed'));
   }
 }
@@ -98,7 +98,7 @@ const another = () => void showNext(mode);
 
 for (const input of modeInputs) {
   input.addEventListener('change', () => {
-    setMode(input.value === 'real' ? 'real' : 'fejk');
+    setMode(input.value === 'real' ? 'real' : 'fake');
     if (current) another();
   });
 }
@@ -120,9 +120,9 @@ document.addEventListener('keydown', (e) => {
 function fromHash(): void {
   const target = parseHash(location.hash);
   if (!target) return;
-  if (target.mode === 'fejk' && target.seed !== current?.seed) {
+  if (target.mode === 'fake' && target.seed !== current?.seed) {
     ++ticket;
-    setMode('fejk');
+    setMode('fake');
     show(generate(target.seed));
   } else if (target.mode === 'real' && target.id !== current?.id) {
     setMode('real');

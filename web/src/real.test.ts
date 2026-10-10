@@ -15,7 +15,7 @@ describe('real', () => {
   test('rejects unexpected shapes', () => {
     expect(() => parseStatsFile(null)).toThrow();
     expect(() => parseStatsFile({ version: 2, stats: [] })).toThrow();
-    expect(() => parseStatsFile({ version: 1, stats: [{ mode: 'fejk', id: 'x', text: 'y' }] })).toThrow(/no usable/);
+    expect(() => parseStatsFile({ version: 1, stats: [{ mode: 'fake', id: 'x', text: 'y' }] })).toThrow(/no usable/);
   });
 
   test('pickReal never repeats the current stat', () => {

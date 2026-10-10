@@ -123,12 +123,12 @@ test.describe('Real mode', () => {
     await expect(statText(page)).not.toHaveText(first ?? '');
     await expect(page.locator('#card')).toHaveAttribute('data-mode', 'real');
 
-    await page.getByRole('radio', { name: 'Fejk' }).check();
-    await expect(page.locator('#card')).toHaveAttribute('data-mode', 'fejk');
+    await page.getByRole('radio', { name: 'Fake' }).check();
+    await expect(page.locator('#card')).toHaveAttribute('data-mode', 'fake');
     await expect(page.locator('#card-badge')).toContainText('Satire');
   });
 
-  test('a real card explains its working; a fejk card has nothing to explain', async ({ page }) => {
+  test('a real card explains its working; a fake card has nothing to explain', async ({ page }) => {
     await page.goto('./#abc12');
     await expect(page.locator('#explain')).toBeHidden();
 
@@ -170,12 +170,12 @@ test.describe('Real mode', () => {
   });
 });
 
-test('if stats.json fails, the toggle falls back to Fejk', async ({ page }) => {
+test('if stats.json fails, the toggle falls back to Fake', async ({ page }) => {
   await page.route('**/stats.json', (route) => route.fulfill({ status: 404 }));
   await page.goto('./');
   await page.getByRole('button', { name: 'Generate a cursed stat' }).click();
   await page.getByRole('radio', { name: 'Real' }).check();
   await expect(page.getByRole('status')).toContainText("Couldn't load the real stats");
-  await expect(page.getByRole('radio', { name: 'Fejk' })).toBeChecked();
-  await expect(page.locator('#card')).toHaveAttribute('data-mode', 'fejk');
+  await expect(page.getByRole('radio', { name: 'Fake' })).toBeChecked();
+  await expect(page.locator('#card')).toHaveAttribute('data-mode', 'fake');
 });

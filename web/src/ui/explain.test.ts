@@ -1,6 +1,6 @@
 // @vitest-environment happy-dom
 import { expect, test } from 'vitest';
-import { generate } from '../fejk/generate';
+import { generate } from '../fake/generate';
 import type { Stat } from '../stat';
 import { renderExplain } from './explain';
 
@@ -46,7 +46,7 @@ test('a real stat shows its working, as text', () => {
   expect(els.query.textContent).toContain('FROM team_games');
 });
 
-test('fejk stats have nothing to explain', () => {
+test('fake stats have nothing to explain', () => {
   const els = elements();
   renderExplain(els, real);
   els.root.open = true;

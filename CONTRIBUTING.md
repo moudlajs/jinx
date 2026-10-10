@@ -7,7 +7,7 @@ checked by something other than the author, not to add ceremony.
 
 1. **Issue first**, with acceptance criteria, a `type:` and `area:` label
    and a milestone. Typo fixes are exempt.
-2. **Branch** `<type>/<short-description>`, lowercase: `feat/fejk-generator`,
+2. **Branch** `<type>/<short-description>`, lowercase: `feat/fake-generator`,
    `fix/copy-button`. CI rejects other names.
 3. **Open a draft PR** as soon as there is something to push:
    `gh pr create --draft`. CI runs on every push; the reviewer does not.
@@ -36,14 +36,14 @@ checked by something other than the author, not to add ceremony.
 | `refactor` | no behaviour change |
 | `chore` | deps, repo plumbing |
 
-Scopes: `web`, `fejk`, `schema`, `engine`, `ci`, `bot`.
+Scopes: `web`, `fake`, `schema`, `engine`, `ci`, `bot`.
 
 No attribution trailers or "Generated with" footers, in branch commits
 too: a squash merge copies branch-commit trailers into `main`.
 
 ## Content rules
 
-- Fejk stats are satire and must always say so, on the card and in any
+- Fake stats are satire and must always say so, on the card and in any
   copied text.
 - Word banks use teams, positions and archetypes ("a backup kicker"),
   never named players.

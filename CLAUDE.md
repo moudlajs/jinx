@@ -11,8 +11,8 @@ accounts, logins, scores, cookies or trackers on the web.
 
 ```
 web/      Vite + TypeScript, no framework. Static, deployed to GitHub Pages.
-  src/fejk/        seeded RNG + Fejk generator (pure, no DOM)
-  src/data/fejk/   word banks (JSON)
+  src/fake/        seeded RNG + Fake generator (pure, no DOM)
+  src/data/fake/   word banks (JSON)
   src/i18n/        UI strings by key (en first; cs/sk later)
 schema/   stat.schema.json: the contract between engine and web
 engine/   (v0.2) Python 3.12 + uv + DuckDB over nflverse data → stats.json
@@ -20,9 +20,9 @@ engine/   (v0.2) Python 3.12 + uv + DuckDB over nflverse data → stats.json
 
 ## The rules
 
-1. **Satire is labelled.** Every Fejk stat carries the satire badge on the
+1. **Satire is labelled.** Every Fake stat carries the satire badge on the
    card and in copied/shared text.
-2. **No real players in Fejk.** Teams, positions, archetypes only.
+2. **No real players in Fake.** Teams, positions, archetypes only.
 3. **Real numbers never come from an LLM or randomness** (v0.2).
 4. **Small.** No framework, no runtime dependencies without asking, no
    abstractions with one caller. Comments are sparse: a short file header,

@@ -10,5 +10,5 @@ Closes #
 ## Verified
 
 - [ ] `npm run typecheck && npm run lint && npm test` pass in `web/`
-- [ ] Fejk output still carries the satire badge and names no real player
+- [ ] Fake output still carries the satire badge and names no real player
 - [ ] If this fixes a bug, it adds the test that would have caught it
