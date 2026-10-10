@@ -23,6 +23,7 @@ sides AS (
            div_game, away_team, false, away_score, home_score, away_qb_id, away_qb_name
     FROM done
 ),
+-- ~1% of QB-seasons list two numbers (trades, changes); min() picks one, fine for a quirk filter.
 jerseys AS (
     SELECT season, gsis_id, min(TRY_CAST(jersey_number AS INTEGER)) AS jersey
     FROM rosters GROUP BY ALL
