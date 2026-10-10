@@ -19,6 +19,28 @@ defaults:
     working-directory: web
 
 jobs:
+  # Engine jobs run only when engine/, schema/ or this workflow changed (always on main).
+  changes:
+    runs-on: ubuntu-latest
+    outputs:
+      engine: ${{ steps.diff.outputs.engine }}
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          fetch-depth: 0
+      - id: diff
+        working-directory: .
+        env:
+          EVENT: ${{ github.event_name }}
+          BASE: ${{ github.event.pull_request.base.sha }}
+        run: |
+          if [ "$EVENT" != "pull_request" ]; then echo "engine=true" >> "$GITHUB_OUTPUT"; exit 0; fi
+          if git diff --name-only "$BASE...HEAD" | grep -qE '^(engine/|schema/|\.github/workflows/ci\.yml$)'; then
+            echo "engine=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "engine=false" >> "$GITHUB_OUTPUT"
+          fi
+
   web:
     runs-on: ubuntu-latest
     steps:
@@ -53,17 +75,55 @@ jobs:
           path: web/playwright-report
           retention-days: 7
 
+  engine-lint:
+    needs: changes
+    if: needs.changes.outputs.engine == 'true'
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: engine
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - uses: astral-sh/setup-uv@bec219d24cd3e171d82865faccec33120bb574f4 # v10.1.0
+        with:
+          working-directory: engine
+      - run: uv sync --locked
+      - run: uv run ruff check
+      - run: uv run ruff format --check
+
+  engine-test:
+    needs: changes
+    if: needs.changes.outputs.engine == 'true'
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: engine
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - uses: astral-sh/setup-uv@bec219d24cd3e171d82865faccec33120bb574f4 # v10.1.0
+        with:
+          working-directory: engine
+      - run: uv sync --locked
+      - run: uv run pytest
+
   # The one job the ruleset requires, so adding jobs never changes required checks.
+  # Engine jobs may be skipped by the path filter; web jobs and the filter may not.
   check:
     if: always()
-    needs: [web, e2e]
+    needs: [changes, web, e2e, engine-lint, engine-test]
     runs-on: ubuntu-latest
     steps:
       - name: All required jobs passed
         working-directory: .
+        env:
+          NEEDS: ${{ toJSON(needs) }}
         run: |
-          echo '${{ toJSON(needs) }}'
-          [ "${{ contains(needs.*.result, 'failure') || contains(needs.*.result, 'cancelled') || contains(needs.*.result, 'skipped') }}" = "false" ]
+          echo "$NEEDS"
+          echo "$NEEDS" | jq -e '
+            ([.[] | .result] | all(. != "failure" and . != "cancelled"))
+            and .changes.result == "success" and .web.result == "success" and .e2e.result == "success"
+            and (.changes.outputs.engine != "true"
+                 or (."engine-lint".result == "success" and ."engine-test".result == "success"))'
 
   conventions:
     # The PR title becomes the squash commit subject that release-please reads.

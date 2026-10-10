@@ -57,11 +57,26 @@ No Dependabot version updates; bump by hand in maintenance passes, picking
 versions at least two weeks old. Actions are pinned to commit SHAs with the
 version in a comment.
 
+## Engine (Python)
+
+- Python 3.12, `uv`, `ruff`, `pytest`. argparse, stdlib logging (JSON lines
+  on stderr via `jinx.log`), DuckDB. No pandas, no CLI or config framework.
+- Expected failures raise a `jinx.errors.JinxError` subclass: exit 1 with a
+  clear message. argparse handles usage errors (exit 2).
+- Unit tests never download; `@pytest.mark.slow` tests do and are excluded
+  by default. `[tool.uv] exclude-newer` keeps resolution two weeks behind.
+
 ## Commands
 
 ```sh
 cd web
 npm run dev | build | typecheck | lint | test | test:e2e
+
+cd engine
+uv run ruff check && uv run ruff format --check
+uv run pytest              # unit tests, no network
+uv run pytest -m slow      # real nflverse data
+uv run jinx generate --count 500 --seed 42 --out dist/stats.json
 ```
 
 Resolve review threads:

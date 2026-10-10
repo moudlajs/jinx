@@ -1,0 +1,24 @@
+"""Generation pipeline: load sources, generate candidates, gate, render, write."""
+
+import logging
+from dataclasses import dataclass
+from pathlib import Path
+
+from jinx.errors import EmptyOutputError
+
+log = logging.getLogger("jinx.pipeline")
+
+
+@dataclass(frozen=True)
+class Options:
+    count: int
+    seed: int
+    out: Path
+
+
+def run(opts: Options) -> int:
+    stats: list[dict] = []
+    if not stats:
+        raise EmptyOutputError("no stat passed the quality gate; nothing written")
+    log.info("wrote stats", extra={"count": len(stats), "out": str(opts.out)})
+    return len(stats)
