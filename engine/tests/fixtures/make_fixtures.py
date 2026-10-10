@@ -8,6 +8,7 @@ every Thursday game. OAK (2019) and LV (2022+) are the same franchise.
 
 import csv
 import itertools
+from datetime import date, timedelta
 from pathlib import Path
 
 OUT = Path(__file__).parent
@@ -57,7 +58,7 @@ def games():
                     "season": season,
                     "game_type": "REG",
                     "week": week,
-                    "gameday": f"{season}-{9 + week // 5:02d}-{1 + (week * 3) % 28:02d}",
+                    "gameday": (date(season, 9, 5) + timedelta(weeks=week - 1)).isoformat(),
                     "weekday": weekday,
                     "gametime": gametime,
                     "away_team": abbr(away, season),
