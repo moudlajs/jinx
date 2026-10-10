@@ -19,7 +19,7 @@ class Subject:
     id: str
     kind: Literal["team", "player"]
     key: str
-    play_where: str = "true"
+    play_where: str = ""
 
 
 @dataclass(frozen=True)
@@ -38,7 +38,7 @@ class Metric:
     subjects: frozenset[str]
     aggregates: dict[str, str]
     sample: str
-    where: str = "true"
+    where: str = ""
     low: float | None = None
     high: float | None = None
 

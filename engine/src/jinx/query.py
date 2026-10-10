@@ -36,6 +36,7 @@ def build(
     if metric.grain == "play":
         where.append(subject.play_where)
     where += [f.sql for f in filters]
+    where = [w for w in where if w]
     cols = ",\n       ".join(f"{sql} AS {name}" for name, sql in metric.aggregates.items())
     sql = (
         f"SELECT {subject.key} AS subject,\n       {metric.sample} AS sample,\n       {cols}\n"
