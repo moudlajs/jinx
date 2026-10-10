@@ -5,6 +5,7 @@ from dataclasses import dataclass
 from pathlib import Path
 
 from jinx.errors import EmptyOutputError
+from jinx.gate import DEFAULT_MIN_SAMPLE
 
 log = logging.getLogger("jinx.pipeline")
 
@@ -15,6 +16,7 @@ class Options:
     seed: int
     out: Path
     data_dir: Path | None = None
+    min_sample: int = DEFAULT_MIN_SAMPLE
 
 
 def run(opts: Options) -> int:

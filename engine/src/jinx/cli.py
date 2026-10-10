@@ -5,8 +5,8 @@ import logging
 import sys
 from pathlib import Path
 
+from jinx import gate, pipeline
 from jinx import log as jinx_log
-from jinx import pipeline
 from jinx.errors import JinxError
 
 log = logging.getLogger("jinx.cli")
@@ -28,6 +28,12 @@ def parser() -> argparse.ArgumentParser:
     gen.add_argument("--seed", type=int, default=0, help="seed for a reproducible run")
     gen.add_argument("--out", type=Path, default=Path("dist/stats.json"), help="output path")
     gen.add_argument(
+        "--min-sample",
+        type=positive_int,
+        default=gate.DEFAULT_MIN_SAMPLE,
+        help="smallest sample a stat may rest on",
+    )
+    gen.add_argument(
         "--data-dir", type=Path, help="read <source>.parquet|csv from here instead of nflverse"
     )
     return p
@@ -36,7 +42,13 @@ def parser() -> argparse.ArgumentParser:
 def main(argv: list[str] | None = None) -> int:
     args = parser().parse_args(argv)
     jinx_log.setup(args.verbose)
-    opts = pipeline.Options(count=args.count, seed=args.seed, out=args.out, data_dir=args.data_dir)
+    opts = pipeline.Options(
+        count=args.count,
+        seed=args.seed,
+        out=args.out,
+        data_dir=args.data_dir,
+        min_sample=args.min_sample,
+    )
     try:
         pipeline.run(opts)
     except JinxError as e:
