@@ -30,6 +30,7 @@ select = ["E", "F", "I", "UP", "B", "SIM", "RUF"]
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]
+pythonpath = ["tests"]
 addopts = "-m 'not slow'"
 markers = ["slow: downloads real nflverse data"]
 

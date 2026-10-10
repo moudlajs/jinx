@@ -78,3 +78,11 @@ def test_no_completed_games_is_a_source_error(tmp_path):
     write(tmp_path / "games.csv", "game_id,season,result\ng1,2000,")
     with pytest.raises(SourceError, match="no completed games"):
         sources.load_all(duckdb.connect(), CFG, data_dir=tmp_path)
+
+
+def test_paths_with_quotes_load(tmp_path):
+    odd = tmp_path / "it's here"
+    odd.mkdir()
+    write(odd / "games.csv", "game_id,season,result\ng1,2000,3")
+    write(odd / "pbp.csv", "game_id,posteam\ng1,CHI")
+    assert sources.load_all(duckdb.connect(), CFG, data_dir=odd) == [2000]
