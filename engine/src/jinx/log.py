@@ -5,7 +5,8 @@ import logging
 import sys
 from datetime import UTC, datetime
 
-_RESERVED = set(vars(logging.makeLogRecord({})))
+# Extra fields may not shadow LogRecord internals or our own keys.
+_RESERVED = set(vars(logging.makeLogRecord({}))) | {"ts", "level", "event", "exc"}
 
 
 class JsonFormatter(logging.Formatter):
