@@ -17,9 +17,9 @@ PHRASES: dict[str, dict[str, str]] = {
         "player": "averages {avg} points per game",
     },
     "fourth-down": {
-        "team": "have converted {just}{k} of {n} fourth downs ({pct})",
+        "team": "have converted {just}{k_of} of {n} fourth downs ({pct})",
     },
-    "field-goals": {"team": "have made {just}{k} of {n} field goals ({pct})"},
+    "field-goals": {"team": "have made {just}{k_of} of {n} field goals ({pct})"},
     "interceptions": {
         "team": "have thrown {just}{k} {interceptions} in {n} games",
         "player": "has thrown {just}{k} {interceptions} in {n} games",
@@ -82,6 +82,7 @@ def render(pick: Pick, names: dict[tuple[str, str], str], rng: random.Random) ->
         "avg": f"{c.value:.1f}",
         "pct": _pct(round(c.value, 1)),
         "k": "no" if k == 0 else str(k),
+        "k_of": "none" if k == 0 else str(k),
         "n": str(row.sample),
         "just": "just " if pick.direction == "low" and k > 0 else "",
         "interceptions": "interception" if k == 1 else "interceptions",
@@ -105,7 +106,7 @@ def render(pick: Pick, names: dict[tuple[str, str], str], rng: random.Random) ->
         case "percentage":
             numbers["percentage"] = round(c.value, 1)
             numbers["count"] = k
-        case "rate":
+        case "rate" if combo.metric.id != "points-per-game":
             numbers["count"] = k
     key = f"{combo.key}|{row.subject}".encode()
     return {

@@ -76,3 +76,17 @@ def test_zero_counts_read_naturally(con):
     stat = text_of(con, pick(con, "interceptions", "team", ["monday"], "GB"))
     assert "have thrown no interceptions in" in stat["text"]
     assert "just" not in stat["text"]
+
+
+def test_zero_of_n_reads_naturally(con):
+    p = pick(con, "field-goals", "team", ["home"], "GB")
+    row = query.Row("GB", 8, {"hits": 0})
+    zero = gate.Pick(generate.Candidate(p.candidate.combo, row, p.candidate.sql_query, 0.0), "low")
+    stat = text_of(con, zero)
+    assert "have made none of 8 field goals (0%)" in stat["text"]
+
+
+def test_points_per_game_has_no_event_count(con):
+    stat = text_of(con, pick(con, "points-per-game", "team", ["home"], "GB"))
+    assert "count" not in stat["numbers"]
+    assert "points per game" in stat["text"]
