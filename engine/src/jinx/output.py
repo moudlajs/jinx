@@ -67,4 +67,5 @@ def write(path: Path, doc: dict) -> None:
     ) as f:
         json.dump(doc, f, ensure_ascii=False, indent=1)
         f.write("\n")
+    os.chmod(f.name, 0o644)  # tempfile creates 0600; Pages serves this file
     os.replace(f.name, path)
