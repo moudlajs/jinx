@@ -18,6 +18,12 @@ def test_bad_usage_exits_2():
     assert e.value.code == 2
 
 
+def test_min_sample_must_be_positive():
+    with pytest.raises(SystemExit) as e:
+        cli.main(["generate", "--min-sample", "0"])
+    assert e.value.code == 2
+
+
 def test_missing_command_exits_2():
     with pytest.raises(SystemExit) as e:
         cli.main([])

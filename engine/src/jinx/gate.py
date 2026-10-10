@@ -40,6 +40,7 @@ def dedupe_key(c: Candidate) -> tuple:
 def select(
     candidates: Iterable[Candidate], count: int, seed: int, min_sample: int = DEFAULT_MIN_SAMPLE
 ) -> list[Pick]:
+    """Expects each combo's rows contiguous, as generate.candidates() yields them."""
     rng = random.Random(seed)
     picks: list[Pick] = []
     seen: set[tuple] = set()
