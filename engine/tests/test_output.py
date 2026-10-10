@@ -28,6 +28,7 @@ def test_document_and_write(tmp_path):
     output.write(path, doc)
     assert json.loads(path.read_text()) == doc
     assert list(path.parent.iterdir()) == [path]
+    assert path.stat().st_mode & 0o777 == 0o644
 
 
 def test_empty_document_is_an_error():
