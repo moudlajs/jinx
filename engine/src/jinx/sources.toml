@@ -1,0 +1,30 @@
+# nflverse sources, verified 2026-10-10 against github.com/nflverse/nflverse-data releases.
+# `columns` lists what the engine relies on; a source missing any of them fails the run.
+base = "https://github.com/nflverse/nflverse-data/releases/download"
+first_season = 1999
+
+[sources.games]
+url = "{base}/schedules/games.parquet"
+columns = [
+  "game_id", "season", "game_type", "week", "gameday", "weekday", "gametime",
+  "away_team", "home_team", "away_score", "home_score", "result", "div_game",
+  "roof", "surface", "temp", "wind", "away_qb_id", "home_qb_id", "away_qb_name", "home_qb_name",
+]
+
+[sources.rosters]
+url = "{base}/rosters/roster_{season}.parquet"
+per_season = true
+columns = ["season", "gsis_id", "jersey_number", "position", "full_name"]
+
+[sources.pbp]
+url = "{base}/pbp/play_by_play_{season}.parquet"
+per_season = true
+columns = [
+  "game_id", "season", "posteam", "defteam", "qtr", "down", "play_type",
+  "fourth_down_converted", "fourth_down_failed", "interception", "pass_touchdown",
+  "rush_touchdown", "field_goal_result", "passer_player_id",
+]
+
+[sources.teams]
+url = "{base}/teams/teams_colors_logos.parquet"
+columns = ["team_abbr", "team_name", "team_nick"]
