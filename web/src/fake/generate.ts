@@ -1,9 +1,9 @@
-// Fejk generator: word banks + seeded RNG → a Stat. Pure, no DOM.
-import conditionsData from '../data/fejk/conditions.json';
-import metricsData from '../data/fejk/metrics.json';
-import punchlinesData from '../data/fejk/punchlines.json';
-import subjectsData from '../data/fejk/subjects.json';
-import templatesData from '../data/fejk/templates.json';
+// Fake generator: word banks + seeded RNG → a Stat. Pure, no DOM.
+import conditionsData from '../data/fake/conditions.json';
+import metricsData from '../data/fake/metrics.json';
+import punchlinesData from '../data/fake/punchlines.json';
+import subjectsData from '../data/fake/subjects.json';
+import templatesData from '../data/fake/templates.json';
 import type { Stat } from '../stat';
 import { createRng, type Rng } from './rng';
 import { parseSeed, randomSeed, seedToNumber } from './seed';
@@ -118,8 +118,8 @@ export function generate(seed: string): Stat {
   });
 
   const stat: Stat = {
-    id: `fejk-${seed}`,
-    mode: 'fejk',
+    id: `fake-${seed}`,
+    mode: 'fake',
     text,
     subject: { kind: subject.kind, label: subject.label },
     conditions,

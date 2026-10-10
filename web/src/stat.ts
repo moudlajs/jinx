@@ -1,6 +1,6 @@
 // Mirrors schema/stat.schema.json; schema.test.ts validates typed samples against it.
 
-export type Mode = 'fejk' | 'real';
+export type Mode = 'fake' | 'real';
 
 export interface Term {
   id: string;

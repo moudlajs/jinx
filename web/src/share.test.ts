@@ -1,11 +1,11 @@
 import { describe, expect, test } from 'vitest';
-import { generate } from './fejk/generate';
+import { generate } from './fake/generate';
 import { copyText, shareBody, statUrl } from './share';
 
 const base = 'https://moudlajs.github.io/jinx/#old';
 
 describe('share', () => {
-  test('a copied Fejk stat carries the satire label and its seed link', () => {
+  test('a copied Fake stat carries the satire label and its seed link', () => {
     const stat = generate('abc12');
     const text = copyText(stat, base);
     expect(text).toContain(stat.text);
@@ -13,7 +13,7 @@ describe('share', () => {
     expect(text.endsWith('https://moudlajs.github.io/jinx/#abc12')).toBe(true);
   });
 
-  test('every Fejk stat is labelled', () => {
+  test('every Fake stat is labelled', () => {
     for (let i = 0; i < 300; i++) expect(shareBody(generate(i.toString(36)))).toMatch(/\(SATIRE: .+\)$/);
   });
 

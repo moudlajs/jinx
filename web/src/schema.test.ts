@@ -2,9 +2,9 @@ import { describe, expect, test } from 'vitest';
 import type { Stat } from './stat';
 import { validateStat } from './test-utils/validate-stat';
 
-const fejk: Stat = {
-  id: 'fejk-abc12',
-  mode: 'fejk',
+const fake: Stat = {
+  id: 'fake-abc12',
+  mode: 'fake',
   text: 'Kickers have missed 87% of field goals on Thursdays.',
   subject: { kind: 'position', label: 'Kickers' },
   conditions: [{ id: 'thursday', label: 'on Thursdays' }],
@@ -14,7 +14,7 @@ const fejk: Stat = {
 };
 
 const real: Stat = {
-  ...fejk,
+  ...fake,
   id: 'real-1',
   mode: 'real',
   subject: { kind: 'team', label: 'Bears' },
@@ -24,15 +24,15 @@ const real: Stat = {
 delete real.seed;
 
 describe('stat schema', () => {
-  test('accepts a fejk and a real stat', () => {
-    expect(validateStat(fejk), JSON.stringify(validateStat.errors)).toBe(true);
+  test('accepts a fake and a real stat', () => {
+    expect(validateStat(fake), JSON.stringify(validateStat.errors)).toBe(true);
     expect(validateStat(real), JSON.stringify(validateStat.errors)).toBe(true);
   });
 
-  test('fejk requires a seed and never names a player', () => {
-    const { seed: _, ...noSeed } = fejk;
+  test('fake requires a seed and never names a player', () => {
+    const { seed: _, ...noSeed } = fake;
     expect(validateStat(noSeed)).toBe(false);
-    expect(validateStat({ ...fejk, subject: { kind: 'player', label: 'Someone' } })).toBe(false);
+    expect(validateStat({ ...fake, subject: { kind: 'player', label: 'Someone' } })).toBe(false);
   });
 
   test('real requires query and seasons', () => {
@@ -41,12 +41,12 @@ describe('stat schema', () => {
   });
 
   test("a stat can't carry the other mode's fields", () => {
-    expect(validateStat({ ...fejk, query: 'select 1' })).toBe(false);
-    expect(validateStat({ ...fejk, seasons: { from: 1999, to: 2025 } })).toBe(false);
+    expect(validateStat({ ...fake, query: 'select 1' })).toBe(false);
+    expect(validateStat({ ...fake, seasons: { from: 1999, to: 2025 } })).toBe(false);
     expect(validateStat({ ...real, seed: 'abc12' })).toBe(false);
   });
 
   test('rejects unknown fields', () => {
-    expect(validateStat({ ...fejk, extra: 1 })).toBe(false);
+    expect(validateStat({ ...fake, extra: 1 })).toBe(false);
   });
 });

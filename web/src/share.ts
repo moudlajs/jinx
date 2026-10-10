@@ -11,7 +11,7 @@ export function statUrl(stat: Stat, base: string): string {
 
 export function shareBody(stat: Stat): string {
   const lines = [stat.punchline ? `${stat.text} ${stat.punchline}` : stat.text];
-  lines.push(`(${t(stat.mode === 'fejk' ? 'share.satireLabel' : 'share.realLabel')})`);
+  lines.push(`(${t(stat.mode === 'fake' ? 'share.satireLabel' : 'share.realLabel')})`);
   return lines.join('\n');
 }
 

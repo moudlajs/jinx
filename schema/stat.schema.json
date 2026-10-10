@@ -2,13 +2,13 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://raw.githubusercontent.com/moudlajs/jinx/main/schema/stat.schema.json",
   "title": "Stat",
-  "description": "One jinx stat. Produced by the Fejk generator (web) and the Real engine (stats.json), rendered by the same card.",
+  "description": "One jinx stat. Produced by the Fake generator (web) and the Real engine (stats.json), rendered by the same card.",
   "type": "object",
   "additionalProperties": false,
   "required": ["id", "mode", "text", "subject", "conditions", "metric", "numbers"],
   "properties": {
     "id": { "type": "string", "minLength": 1 },
-    "mode": { "enum": ["fejk", "real"] },
+    "mode": { "enum": ["fake", "real"] },
     "text": { "type": "string", "minLength": 1 },
     "punchline": { "type": "string", "minLength": 1 },
     "subject": {
@@ -21,7 +21,7 @@
       }
     },
     "conditions": {
-      "description": "Fejk conditions or Real filters, in the order they appear in the text.",
+      "description": "Fake conditions or Real filters, in the order they appear in the text.",
       "type": "array",
       "minItems": 1,
       "items": { "$ref": "#/$defs/term" }
@@ -57,7 +57,7 @@
       }
     },
     "query": { "description": "Real mode: the SQL that produced the numbers.", "type": "string" },
-    "seed": { "description": "Fejk mode: the seed that re-renders this stat.", "type": "string", "pattern": "^[0-9a-z]{1,7}$" }
+    "seed": { "description": "Fake mode: the seed that re-renders this stat.", "type": "string", "pattern": "^[0-9a-z]{1,7}$" }
   },
   "allOf": [
     {
@@ -65,7 +65,7 @@
       "then": { "required": ["query", "seasons"], "not": { "required": ["seed"] } }
     },
     {
-      "if": { "properties": { "mode": { "const": "fejk" } } },
+      "if": { "properties": { "mode": { "const": "fake" } } },
       "then": {
         "required": ["seed"],
         "not": { "anyOf": [{ "required": ["query"] }, { "required": ["seasons"] }] },

@@ -37,7 +37,7 @@ def test_empty_document_is_an_error():
 
 
 def test_schema_violation_names_the_path(tmp_path):
-    doc = output.document([{**STAT, "mode": "fejk"}], seed=1, now=NOW)
+    doc = output.document([{**STAT, "mode": "fake"}], seed=1, now=NOW)
     with pytest.raises(output.InvalidOutputError, match="stats/0"):
         output.write(tmp_path / "stats.json", doc)
     assert not (tmp_path / "stats.json").exists()

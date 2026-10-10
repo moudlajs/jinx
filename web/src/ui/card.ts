@@ -27,12 +27,12 @@ export function highlightNumbers(el: HTMLElement, text: string): void {
 }
 
 export function renderCard(els: CardElements, stat: Stat): void {
-  const fejk = stat.mode === 'fejk';
+  const fake = stat.mode === 'fake';
   els.card.dataset.mode = stat.mode;
   els.card.dataset.seed = stat.seed ?? '';
-  els.badge.classList.toggle('badge-real', !fejk);
-  els.badgeShort.textContent = t(fejk ? 'card.badge.satire' : 'card.badge.real');
-  els.badgeLong.textContent = t(fejk ? 'card.badge.satireLong' : 'card.badge.realLong');
+  els.badge.classList.toggle('badge-real', !fake);
+  els.badgeShort.textContent = t(fake ? 'card.badge.satire' : 'card.badge.real');
+  els.badgeLong.textContent = t(fake ? 'card.badge.satireLong' : 'card.badge.realLong');
   highlightNumbers(els.text, stat.text);
   els.punchline.textContent = stat.punchline ?? '';
   els.punchline.hidden = !stat.punchline;

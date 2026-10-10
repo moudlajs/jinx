@@ -12,7 +12,7 @@ technically true and completely useless.
 
 ## How it works
 
-- **Fejk mode** combines absurd conditions, subjects and numbers from word
+- **Fake mode** combines absurd conditions, subjects and numbers from word
   banks in your browser. Every number is made up, and every card says so.
   A stat's seed is in the link, so a shared link shows the same stat.
   Copy and Share always include the satire label.
@@ -41,7 +41,7 @@ Real-mode numbers come from [nflverse](https://github.com/nflverse)
 
 ## Disclaimer
 
-Fejk stats are satire: generated at random, about teams, positions and
+Fake stats are satire: generated at random, about teams, positions and
 archetypes, never about real players. Not affiliated with the NFL or any
 team or broadcaster.
 
