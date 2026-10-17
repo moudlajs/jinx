@@ -124,8 +124,8 @@ jobs:
             Read CLAUDE.md and CONTRIBUTING.md first; review against them.
             Focus, in order:
 
-            1. Satire safety. Every Fejk stat must carry the satire badge on
-               the card AND in copied/shared text. Fejk word banks must never
+            1. Satire safety. Every Fake stat must carry the satire badge on
+               the card AND in copied/shared text. Fake word banks must never
                name a real player; teams, positions and archetypes only.
             2. Correctness: seeded RNG determinism (same seed, same stat),
                templates that can render with an empty or missing slot,
