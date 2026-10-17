@@ -39,15 +39,6 @@ export function highlightNumbers(el: HTMLElement, text: string): void {
   );
 }
 
-function items(tag: string, className: string, texts: string[]): HTMLElement[] {
-  return texts.map((text) => {
-    const el = document.createElement(tag);
-    el.className = className;
-    el.textContent = text;
-    return el;
-  });
-}
-
 export function renderCard(els: CardElements, stat: Stat): void {
   const fake = stat.mode === 'fake';
   els.card.dataset.mode = stat.mode;
@@ -78,7 +69,9 @@ export function renderCard(els: CardElements, stat: Stat): void {
   if (b.dotsLabel) els.dots.setAttribute('aria-label', b.dotsLabel);
   else els.dots.removeAttribute('aria-label');
   els.backText.textContent = b.text;
-  els.chips.replaceChildren(...items('li', 'chip', b.chips));
+  els.chips.replaceChildren(
+    ...b.chips.map((text) => Object.assign(document.createElement('li'), { className: 'chip', textContent: text })),
+  );
   els.backSource.textContent = b.source;
   els.card.hidden = false;
 }
