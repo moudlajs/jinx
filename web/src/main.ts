@@ -211,8 +211,12 @@ async function fillTicker(): Promise<void> {
   renderTicker(track, fake);
   try {
     const { stats } = await loadStats(STATS_URL);
-    const real = Array.from({ length: Math.min(TICKER_SIZE, stats.length) }, () => pickReal(stats));
-    renderTicker(track, interleave(fake, [...new Set(real)]));
+    const real: Stat[] = [];
+    while (real.length < Math.min(TICKER_SIZE, stats.length)) {
+      const pick = pickReal(stats);
+      if (!real.includes(pick)) real.push(pick);
+    }
+    renderTicker(track, interleave(fake, real));
   } catch {
     // Fake-only ticker is fine.
   }
