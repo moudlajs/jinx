@@ -35,5 +35,5 @@
   { "id": "trailing-three", "category": "game-state", "text": "when trailing by exactly 3" },
   { "id": "after-timeout", "category": "game-state", "text": "after their opponent iced the kicker" },
   { "id": "two-minute", "category": "game-state", "text": "after the two-minute warning" },
-  { "id": "fourth-quarter", "category": "game-state", "text": "in the fourth quarter of games decided by {1..3} points" }
+  { "id": "fourth-quarter", "category": "game-state", "text": "in the fourth quarter of games decided by {2..3} points" }
 ]

@@ -2,10 +2,9 @@
 :root {
   color-scheme: dark;
   --bg: #0b0f14;
-  --table: #0e141b;
+  --table: #151e29;
   --surface: #121a23;
   --border: #263241;
-  --rule: #1b2430;
   --text: #ecf1f6;
   --muted: #a3b0bd;
   --faint: #7c8a98;
@@ -36,7 +35,6 @@
   --table: #e9edf1;
   --surface: #ffffff;
   --border: #d5dce3;
-  --rule: #dde3e9;
   --text: #0f161d;
   --muted: #4a5765;
   --faint: #5b6876;
@@ -61,7 +59,6 @@
     --table: #e9edf1;
     --surface: #ffffff;
     --border: #d5dce3;
-    --rule: #dde3e9;
     --text: #0f161d;
     --muted: #4a5765;
     --faint: #5b6876;
@@ -400,12 +397,7 @@ h2 {
 
 .face-back .face-inner {
   gap: 16px;
-  background-color: var(--face-back);
-  background-image: repeating-linear-gradient(
-    135deg,
-    color-mix(in srgb, var(--accent) 5%, transparent) 0 12px,
-    transparent 12px 24px
-  );
+  background: var(--face-back);
 }
 
 /* Deal: the old card is thrown off the table, solid the whole way; the new one rises from the deck. */
@@ -652,11 +644,12 @@ h2 {
 }
 
 .chip {
-  padding: 4px 11px;
+  padding: 5px 12px;
+  border: 1px solid var(--border);
   border-radius: 999px;
   background: var(--chip);
-  color: var(--muted);
-  font-size: 0.85rem;
+  color: var(--text);
+  font-size: 0.875rem;
 }
 
 /* Ticker */
@@ -843,13 +836,11 @@ h2 {
   .rail-left {
     grid-area: left;
     gap: clamp(32px, 5vh, 52px);
-    border-right: 1px solid var(--rule);
   }
 
   .rail-right {
     grid-area: right;
     gap: 14px;
-    border-left: 1px solid var(--rule);
   }
 
   .brand {
@@ -947,12 +938,8 @@ h2 {
     display: grid;
     place-items: center;
     padding: 48px clamp(24px, 4vw, 80px);
-    background-color: var(--table);
-    background-image: repeating-linear-gradient(
-      0deg,
-      color-mix(in srgb, var(--text) 3%, transparent) 0 2px,
-      transparent 2px 108px
-    );
+    /* One calm surface: a soft pool of light under the deck, fading into the rails. */
+    background: radial-gradient(ellipse 60% 70% at 50% 48%, var(--table), var(--bg));
   }
 
   .deck {

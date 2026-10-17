@@ -82,6 +82,8 @@ function toss(): void {
   for (const el of [ghost, ...ghost.querySelectorAll('[id]')]) el.removeAttribute('id');
   ghost.setAttribute('aria-hidden', 'true');
   ghost.inert = true;
+  // The copy keeps the card's classes; drop the rise so only the toss animation runs on it.
+  ghost.classList.remove('rise');
   ghost.classList.add('ghost');
   deck.querySelectorAll('.ghost').forEach((g) => g.remove());
   deck.append(ghost);

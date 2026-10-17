@@ -106,6 +106,18 @@ test('a fake card turns over to its ingredients', async ({ page }) => {
   await expect(page.locator('#card')).not.toHaveClass(/turned/);
 });
 
+test('every deal tosses the old card, not just the first', async ({ page }) => {
+  await page.goto('./');
+  await page.getByRole('button', { name: 'Deal me a card' }).click();
+  for (let i = 0; i < 2; i++) {
+    await expect(page.locator('#deck .ghost')).toHaveCount(0);
+    await page.getByRole('button', { name: 'Deal another' }).click();
+    const ghost = page.locator('#deck .ghost');
+    await expect(ghost).toHaveCount(1);
+    expect(await ghost.evaluate((el) => getComputedStyle(el).animationName)).toBe('toss');
+  }
+});
+
 test('dealing leaves exactly one card behind', async ({ page }) => {
   await page.goto('./#abc12');
   await page.getByRole('button', { name: 'Deal another' }).click();
