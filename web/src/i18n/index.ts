@@ -1,4 +1,4 @@
-// UI strings by key. English only for now; cs/sk add a sibling JSON and a picker.
+// UI strings by key. The site is English only; keys keep copy out of the code.
 import en from './en.json';
 
 export type Key = keyof typeof en;

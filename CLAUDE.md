@@ -13,7 +13,7 @@ accounts, logins, scores, cookies or trackers on the web.
 web/      Vite + TypeScript, no framework. Static, deployed to GitHub Pages.
   src/fake/        seeded RNG + Fake generator (pure, no DOM)
   src/data/fake/   word banks (JSON)
-  src/i18n/        UI strings by key (en first; cs/sk later)
+  src/i18n/        UI strings by key (English only, by decision)
 schema/   stat.schema.json: the contract between engine and web
 engine/   (v0.2) Python 3.12 + uv + DuckDB over nflverse data → stats.json
 ```
