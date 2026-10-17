@@ -8,7 +8,7 @@ technically true and completely useless.
 
 **Live:** https://moudlajs.github.io/jinx/
 
-<img src="docs/screenshot.png" alt="jinx on a phone: a Satire-labelled card reading a made-up stat about the Raiders" width="320">
+<img src="docs/screenshot.png" alt="jinx on a phone: a Satire-labelled card with a big 27 and a made-up stat about fullbacks fumbling" width="320">
 
 ## How it works
 

@@ -1,5 +1,7 @@
+import '@fontsource-variable/archivo/wdth.css';
 import './style.css';
 import { generate, nextStat } from './fake/generate';
+import { randomSeed } from './fake/seed';
 import { parseHash, setHash } from './hash';
 import { applyI18n, t } from './i18n';
 import { attribution, randomQuote } from './quotes';
@@ -8,7 +10,7 @@ import { copyText, shareBody, statUrl } from './share';
 import type { Mode, Stat } from './stat';
 import { initThemeToggle } from './theme';
 import { renderCard } from './ui/card';
-import { renderExplain } from './ui/explain';
+import { interleave, renderTicker } from './ui/ticker';
 
 const byId = <T extends HTMLElement = HTMLElement>(id: string): T => {
   const el = document.getElementById(id);
@@ -23,23 +25,31 @@ const quote = randomQuote();
 byId('quote-text').textContent = quote.text;
 byId('quote-author').textContent = attribution(quote);
 
+const STATS_URL = `${import.meta.env.BASE_URL}stats.json`;
 const hero = byId('hero');
+const deck = byId('deck');
+const actions = byId('card-actions');
 const els = {
   card: byId('card'),
   badge: byId('card-badge'),
   badgeShort: byId('card-badge-short'),
   badgeLong: byId('card-badge-long'),
+  code: byId('card-code'),
+  big: byId('card-big'),
+  bigLabel: byId('card-big-label'),
   text: byId('stat-text'),
   punchline: byId('stat-punchline'),
+  meta: byId('card-meta'),
+  backBadge: byId('back-badge'),
+  backTitle: byId('back-title'),
+  backCode: byId('back-code'),
+  dots: byId('back-dots'),
+  backText: byId('back-text'),
+  chips: byId('back-chips'),
+  backSource: byId('back-source'),
 };
-const explain = {
-  root: byId<HTMLDetailsElement>('explain'),
-  metric: byId('explain-metric'),
-  filters: byId('explain-filters'),
-  sample: byId('explain-sample'),
-  seasons: byId('explain-seasons'),
-  query: byId('explain-query'),
-};
+const front = byId('card-front');
+const backFace = byId('card-back');
 let current: Stat | undefined;
 
 const status = byId('status');
@@ -55,12 +65,42 @@ function clearStatus(): void {
   status.textContent = '';
 }
 
+const reducedMotion = matchMedia('(prefers-reduced-motion: reduce)');
+
+function setTurned(turned: boolean): void {
+  els.card.classList.toggle('turned', turned);
+  front.inert = turned;
+  backFace.inert = !turned;
+  byId('turn').setAttribute('aria-expanded', String(turned));
+}
+
+// Deal: a copy of the visible card is tossed off the table while the new one rises from the deck.
+function toss(): void {
+  const top = hero.hidden ? els.card : hero;
+  if (reducedMotion.matches || top.hidden) return;
+  const ghost = top.cloneNode(true) as HTMLElement;
+  for (const el of [ghost, ...ghost.querySelectorAll('[id]')]) el.removeAttribute('id');
+  ghost.setAttribute('aria-hidden', 'true');
+  ghost.inert = true;
+  ghost.classList.add('ghost');
+  deck.querySelectorAll('.ghost').forEach((g) => g.remove());
+  deck.append(ghost);
+  const done = () => ghost.remove();
+  ghost.addEventListener('animationend', done, { once: true });
+  window.setTimeout(done, 1500);
+  els.card.classList.remove('rise');
+  void els.card.offsetWidth; // restart the rise animation
+  els.card.classList.add('rise');
+}
+
 function show(stat: Stat): void {
   clearStatus();
+  toss();
   current = stat;
+  setTurned(false);
   renderCard(els, stat);
-  renderExplain(explain, stat);
   hero.hidden = true;
+  actions.hidden = false;
   setHash(stat);
 }
 
@@ -82,7 +122,7 @@ async function showNext(m: Mode, wantedId?: string): Promise<void> {
   }
   announce(t('real.loading'));
   try {
-    const { stats } = await loadStats(`${import.meta.env.BASE_URL}stats.json`);
+    const { stats } = await loadStats(STATS_URL);
     if (mine !== ticket) return;
     const wanted = wantedId ? stats.find((s) => s.id === wantedId) : undefined;
     show(wanted ?? pickReal(stats, current));
@@ -108,6 +148,14 @@ byId('generate').addEventListener('click', () => {
   byId('another').focus();
 });
 byId('another').addEventListener('click', another);
+byId('turn').addEventListener('click', () => {
+  setTurned(true);
+  byId('turn-back').focus();
+});
+byId('turn-back').addEventListener('click', () => {
+  setTurned(false);
+  byId('turn').focus();
+});
 
 // Space = next, unless a control has focus (it would fire twice).
 document.addEventListener('keydown', (e) => {
@@ -154,5 +202,26 @@ if (typeof navigator.share === 'function') {
   });
 }
 
+// The ticker starts with Fake stats and mixes in Real ones once stats.json arrives, if it does.
+const TICKER_SIZE = 6;
+async function fillTicker(): Promise<void> {
+  const fake = Array.from({ length: TICKER_SIZE }, () => generate(randomSeed()));
+  const track = byId('ticker-track');
+  byId('ticker').hidden = false;
+  renderTicker(track, fake);
+  try {
+    const { stats } = await loadStats(STATS_URL);
+    const real: Stat[] = [];
+    while (real.length < Math.min(TICKER_SIZE, stats.length)) {
+      const pick = pickReal(stats);
+      if (!real.includes(pick)) real.push(pick);
+    }
+    renderTicker(track, interleave(fake, real));
+  } catch {
+    // Fake-only ticker is fine.
+  }
+}
+
 window.addEventListener('hashchange', fromHash);
 fromHash();
+void fillTicker();

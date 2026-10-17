@@ -12,6 +12,6 @@ describe('i18n', () => {
   });
 
   test('t returns the English string', () => {
-    expect(t('card.another')).toBe('Another one');
+    expect(t('card.another')).toBe('Deal another');
   });
 });
