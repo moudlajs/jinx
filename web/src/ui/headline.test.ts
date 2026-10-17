@@ -26,10 +26,10 @@ test('real per-game totals get a label that matches the total', () => {
   expect(headline(ints)).toEqual({ value: '24', label: 'interceptions thrown' });
 });
 
-test('points per game falls back to the first number that is not a year', () => {
+test('points per game reads the average, not a number in the team name', () => {
   const ppg = {
     ...base,
-    text: 'Since 2015, the Jets have scored 9.8 points per game in 11 games on Mondays.',
+    text: 'Since 2015, the 49ers average 9.8 points per game in 11 games on Mondays.',
     metric: { id: 'points-per-game', label: 'points per game' },
     numbers: { sampleSize: 11 },
   };

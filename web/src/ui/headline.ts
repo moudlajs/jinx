@@ -11,9 +11,9 @@ export function formatPct(p: number): string {
   return `${Number.isInteger(p) ? p : p.toFixed(1)}%`;
 }
 
-// Points per game has no number field, so take the first number in the text that isn't a year.
-function firstNumber(text: string): string | undefined {
-  return text.match(/\d+(?:\.\d+)?/g)?.find((n) => !/^(19|20)\d\d$/.test(n));
+// Points per game has no number field; the engine always writes "<avg> points per game".
+function perGame(text: string): string | undefined {
+  return /(\d+(?:\.\d+)?) points? per game/.exec(text)?.[1];
 }
 
 export function headline(stat: Stat): Headline {
@@ -26,7 +26,7 @@ export function headline(stat: Stat): Headline {
   }
   if (percentage !== undefined) return { value: formatPct(percentage), label };
   if (count !== undefined) return { value: String(count), label };
-  return { value: firstNumber(stat.text) ?? String(stat.numbers.sampleSize), label };
+  return { value: perGame(stat.text) ?? String(stat.numbers.sampleSize), label };
 }
 
 // "No. K3F9A2": the seed for Fake, a slice of the id for Real.
