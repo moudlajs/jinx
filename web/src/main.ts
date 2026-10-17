@@ -40,6 +40,7 @@ const els = {
   text: byId('stat-text'),
   punchline: byId('stat-punchline'),
   meta: byId('card-meta'),
+  backBadge: byId('back-badge'),
   backTitle: byId('back-title'),
   backCode: byId('back-code'),
   dots: byId('back-dots'),

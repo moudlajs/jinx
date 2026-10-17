@@ -47,6 +47,6 @@ test('a fake stat lists its ingredients and says it is made up', () => {
   expect(b.title).toBe('Ingredients');
   expect(b.chips).toContain(stat.subject.label);
   expect(b.chips).toContain(stat.metric.label);
-  expect(b.source).toMatch(/made up/);
+  expect(b.source).toMatch(/not from data/);
   expect(b.dots).toEqual([]);
 });

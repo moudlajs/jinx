@@ -15,6 +15,7 @@ export interface CardElements {
   text: HTMLElement;
   punchline: HTMLElement;
   meta: HTMLElement;
+  backBadge: HTMLElement;
   backTitle: HTMLElement;
   backCode: HTMLElement;
   dots: HTMLElement;
@@ -51,7 +52,9 @@ export function renderCard(els: CardElements, stat: Stat): void {
   const fake = stat.mode === 'fake';
   els.card.dataset.mode = stat.mode;
   els.card.dataset.seed = stat.seed ?? '';
-  els.badge.classList.toggle('badge-real', !fake);
+  // Both faces carry the satire or real-data badge, so a turned card is still labelled.
+  for (const badge of [els.badge, els.backBadge]) badge.classList.toggle('badge-real', !fake);
+  els.backBadge.textContent = t(fake ? 'card.badge.satireLong' : 'card.badge.realLong');
   els.badgeShort.textContent = t(fake ? 'card.badge.satire' : 'card.badge.real');
   els.badgeLong.textContent = t(fake ? 'card.badge.satireLong' : 'card.badge.realLong');
   const code = t('card.number', { code: cardCode(stat) });

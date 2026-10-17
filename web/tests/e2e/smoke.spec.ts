@@ -101,7 +101,7 @@ test('a fake card turns over to its ingredients', async ({ page }) => {
   await page.goto('./#abc12');
   await page.getByRole('button', { name: 'How we know' }).click();
   await expect(page.locator('#card-back').getByRole('heading', { name: 'Ingredients' })).toBeVisible();
-  await expect(page.locator('#back-source')).toContainText('made up');
+  await expect(page.locator('#back-badge')).toHaveText('Satire: every number on this card is made up.');
   await page.getByRole('button', { name: 'Deal another' }).click();
   await expect(page.locator('#card')).not.toHaveClass(/turned/);
 });

@@ -604,6 +604,12 @@ h2 {
 }
 
 /* Card back */
+.face-back .badge {
+  letter-spacing: 0.04em;
+  text-transform: none;
+  font-size: 0.8rem;
+}
+
 .back-title {
   font-weight: 900;
   font-stretch: 75%;
