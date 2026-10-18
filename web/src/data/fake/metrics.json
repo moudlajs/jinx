@@ -12,5 +12,13 @@
   { "id": "fumbles", "kind": "count", "unit": "games", "label": "fumbles", "pl": "have fumbled {count} times", "sg": "has fumbled {count} times" },
   { "id": "celebration-flags", "kind": "count", "unit": "games", "label": "celebration penalties", "pl": "have drawn {count} celebration penalties", "sg": "has drawn {count} celebration penalties" },
   { "id": "long-tds-allowed", "kind": "count", "unit": "games", "label": "70+ yard touchdowns allowed", "pl": "have allowed {count} touchdowns of 70+ yards", "sg": "has allowed {count} touchdowns of 70+ yards" },
-  { "id": "gatorade", "kind": "count", "unit": "games", "label": "Gatorade coolers knocked over", "pl": "have knocked over {count} Gatorade coolers", "sg": "has knocked over {count} Gatorade coolers" }
+  { "id": "gatorade", "kind": "count", "unit": "games", "label": "Gatorade coolers knocked over", "pl": "have knocked over {count} Gatorade coolers", "sg": "has knocked over {count} Gatorade coolers" },
+  { "id": "two-point", "kind": "percentage", "extreme": "low", "unit": "attempts", "label": "2-point conversions made", "pl": "convert just {pct} of two-point tries", "sg": "converts just {pct} of two-point tries" },
+  { "id": "fake-punts", "kind": "percentage", "extreme": "high", "unit": "attempts", "label": "fake punts converted", "pl": "have converted {pct} of fake punts", "sg": "has converted {pct} of fake punts" },
+  { "id": "delay-of-game", "kind": "percentage", "extreme": "high", "unit": "snaps", "label": "snaps with a delay of game", "pl": "have taken a delay of game on {pct} of snaps", "sg": "has taken a delay of game on {pct} of snaps" },
+  { "id": "timeouts-first-half", "kind": "percentage", "extreme": "high", "unit": "halves", "label": "first-half timeouts wasted", "pl": "have burned a timeout before the first snap in {pct} of halves", "sg": "has burned a timeout before the first snap in {pct} of halves" },
+  { "id": "helmets-lost", "kind": "count", "unit": "games", "label": "helmets lost mid-play", "pl": "have lost a helmet {count} times mid-play", "sg": "has lost a helmet {count} times mid-play" },
+  { "id": "tunnel-trips", "kind": "count", "unit": "games", "label": "trips to the blue medical tent", "pl": "have visited the blue medical tent {count} times", "sg": "has visited the blue medical tent {count} times" },
+  { "id": "sideline-tablets", "kind": "count", "unit": "games", "label": "sideline tablets thrown", "pl": "have thrown {count} sideline tablets", "sg": "has thrown {count} sideline tablets" },
+  { "id": "ref-hats", "kind": "count", "unit": "games", "label": "flags thrown at them", "pl": "have been hit by {count} penalty flags", "sg": "has been hit by {count} penalty flags" }
 ]

@@ -2,7 +2,7 @@ import { describe, expect, test } from 'vitest';
 import { allQuotes, attribution, randomQuote } from './quotes';
 
 describe('quotes', () => {
-  test('about 20 short, attributed quotes', () => {
+  test('short, attributed quotes', () => {
     expect(allQuotes.length).toBeGreaterThanOrEqual(18);
     for (const q of allQuotes) {
       expect(q.text.length, q.text).toBeLessThanOrEqual(80);

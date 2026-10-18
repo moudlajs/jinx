@@ -1,12 +1,13 @@
 // Fake generator: word banks + seeded RNG → a Stat. Pure, no DOM.
 import conditionsData from '../data/fake/conditions.json';
+import decksData from '../data/fake/decks.json';
 import metricsData from '../data/fake/metrics.json';
 import punchlinesData from '../data/fake/punchlines.json';
 import subjectsData from '../data/fake/subjects.json';
 import templatesData from '../data/fake/templates.json';
 import type { Stat } from '../stat';
 import { createRng, type Rng } from './rng';
-import { parseSeed, randomSeed, seedToNumber } from './seed';
+import { deckOf, parseSeed, randomSeed, seedToNumber } from './seed';
 
 export interface Subject {
   id: string;
@@ -39,6 +40,22 @@ export const banks = {
   punchlines: punchlinesData as string[],
 };
 
+type Banks = typeof banks;
+
+// Banks are append-only: a deck is how many entries of each one a seed may draw from.
+export const decks = decksData as Record<keyof Banks, number>[];
+
+function deckBanks(seed: string): Banks {
+  const size = decks[deckOf(seed)] as (typeof decks)[number];
+  return {
+    subjects: banks.subjects.slice(0, size.subjects),
+    conditions: banks.conditions.slice(0, size.conditions),
+    metrics: banks.metrics.slice(0, size.metrics),
+    templates: banks.templates.slice(0, size.templates),
+    punchlines: banks.punchlines.slice(0, size.punchlines),
+  };
+}
+
 const PUNCHLINE_CHANCE = 0.35;
 // Mostly 2–3 conditions; 4 is rare so the card stays readable on a phone.
 const CONDITION_COUNTS = [2, 2, 2, 3, 3, 3, 4];
@@ -62,9 +79,9 @@ export function fillTemplate(template: string, slots: Record<string, string>): s
   });
 }
 
-function pickConditions(rng: Rng, count: number): Condition[] {
-  const categories = rng.sample([...new Set(banks.conditions.map((c) => c.category))], count);
-  return categories.map((cat) => rng.pick(banks.conditions.filter((c) => c.category === cat)));
+function pickConditions(rng: Rng, pool: Condition[], count: number): Condition[] {
+  const categories = rng.sample([...new Set(pool.map((c) => c.category))], count);
+  return categories.map((cat) => rng.pick(pool.filter((c) => c.category === cat)));
 }
 
 function formatPct(p: number): string {
@@ -98,15 +115,16 @@ function numbersFor(metric: Metric, rng: Rng): { phrase: Record<string, string>;
 export function generate(seed: string): Stat {
   if (parseSeed(seed) !== seed) throw new Error(`invalid seed: ${JSON.stringify(seed)}`);
   const rng = createRng(seedToNumber(seed));
-  const subject = rng.pick(banks.subjects);
-  const metric = rng.pick(banks.metrics);
-  const conditions = pickConditions(rng, rng.pick(CONDITION_COUNTS)).map((c) => ({ id: c.id, label: fillRanges(c.text, rng) }));
+  const b = deckBanks(seed);
+  const subject = rng.pick(b.subjects);
+  const metric = rng.pick(b.metrics);
+  const conditions = pickConditions(rng, b.conditions, rng.pick(CONDITION_COUNTS)).map((c) => ({ id: c.id, label: fillRanges(c.text, rng) }));
   const { phrase, numbers } = numbersFor(metric, rng);
   const metricText = fillTemplate(subject.number === 'sg' ? metric.sg : metric.pl, phrase);
   const joined = joinConditions(conditions.map((c) => c.label));
   const unit = metric.unit ?? 'games';
 
-  const text = fillTemplate(rng.pick(banks.templates), {
+  const text = fillTemplate(rng.pick(b.templates), {
     subject: subject.label,
     Subject: capitalize(subject.label),
     metric: metricText,
@@ -127,7 +145,7 @@ export function generate(seed: string): Stat {
     numbers,
     seed,
   };
-  if (rng.chance(PUNCHLINE_CHANCE)) stat.punchline = rng.pick(banks.punchlines);
+  if (rng.chance(PUNCHLINE_CHANCE)) stat.punchline = rng.pick(b.punchlines);
   return stat;
 }
 
