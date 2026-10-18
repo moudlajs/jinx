@@ -1,27 +1,40 @@
-// axe over every state a visitor can reach, in both themes.
+// axe over every state a visitor can reach, in both themes. Reduced motion turns animations off, so no settling.
 import AxeBuilder from '@axe-core/playwright';
 import { expect, test, type Page } from '@playwright/test';
 
-async function audit(page: Page, state: string) {
-  // Let the deal and turn animations settle so axe sees final colors.
-  await page.waitForTimeout(1000);
-  const { violations } = await new AxeBuilder({ page }).withTags(['wcag2a', 'wcag2aa', 'wcag21aa']).analyze();
-  expect(violations.map((v) => `${state}: ${v.id} ${v.nodes.map((n) => n.target.join(' ')).join(', ')}`)).toEqual([]);
-}
+const states: [string, (page: Page) => Promise<void>][] = [
+  ['cover', async (page) => {
+    await page.goto('./');
+    await expect(page.locator('#hero')).toBeVisible();
+  }],
+  ['fake front', async (page) => {
+    await page.goto('./#abc12');
+    await expect(page.locator('#stat-text')).not.toBeEmpty();
+  }],
+  ['fake back', async (page) => {
+    await page.goto('./#abc12');
+    await page.getByRole('button', { name: 'How we know' }).click();
+    await expect(page.getByRole('button', { name: 'Turn back' })).toBeFocused();
+  }],
+  ['real front', async (page) => {
+    await page.goto('./#real-9d86edf15bec');
+    await expect(page.locator('#card')).toHaveAttribute('data-mode', 'real');
+  }],
+  ['real back', async (page) => {
+    await page.goto('./#real-9d86edf15bec');
+    await page.getByRole('button', { name: 'How we know' }).click();
+    await expect(page.getByRole('button', { name: 'Turn back' })).toBeFocused();
+  }],
+];
 
 for (const scheme of ['light', 'dark'] as const) {
-  test(`no axe violations in the ${scheme} theme`, async ({ page }) => {
-    await page.route('**/stats.json', (route) => route.fulfill({ path: 'tests/fixtures/stats.json' }));
-    await page.emulateMedia({ colorScheme: scheme, reducedMotion: 'reduce' });
-    await page.goto('./');
-    await audit(page, 'cover');
-    await page.goto('./#abc12');
-    await audit(page, 'fake front');
-    await page.getByRole('button', { name: 'How we know' }).click();
-    await audit(page, 'fake back');
-    await page.goto('./#real-9d86edf15bec');
-    await audit(page, 'real front');
-    await page.getByRole('button', { name: 'How we know' }).click();
-    await audit(page, 'real back');
-  });
+  for (const [state, open] of states) {
+    test(`no axe violations: ${state}, ${scheme} theme`, async ({ page }) => {
+      await page.route('**/stats.json', (route) => route.fulfill({ path: 'tests/fixtures/stats.json' }));
+      await page.emulateMedia({ colorScheme: scheme, reducedMotion: 'reduce' });
+      await open(page);
+      const { violations } = await new AxeBuilder({ page }).withTags(['wcag2a', 'wcag2aa', 'wcag21aa']).analyze();
+      expect(violations.map((v) => `${v.id}: ${v.nodes.map((n) => n.target.join(' ')).join(', ')}`)).toEqual([]);
+    });
+  }
 }
