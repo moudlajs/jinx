@@ -50,5 +50,19 @@
   { "id": "broncos", "kind": "team", "number": "pl", "label": "the Broncos" },
   { "id": "chiefs", "kind": "team", "number": "pl", "label": "the Chiefs" },
   { "id": "raiders", "kind": "team", "number": "pl", "label": "the Raiders" },
-  { "id": "chargers", "kind": "team", "number": "pl", "label": "the Chargers" }
+  { "id": "chargers", "kind": "team", "number": "pl", "label": "the Chargers" },
+  { "id": "gunners", "kind": "position", "number": "pl", "label": "gunners" },
+  { "id": "practice-squad-wrs", "kind": "position", "number": "pl", "label": "practice-squad receivers" },
+  { "id": "kick-returners", "kind": "position", "number": "pl", "label": "kick returners" },
+  { "id": "rookie-kickers", "kind": "position", "number": "pl", "label": "rookie kickers" },
+  { "id": "backup-centers", "kind": "position", "number": "pl", "label": "backup centers" },
+  { "id": "coordinators", "kind": "position", "number": "pl", "label": "offensive coordinators" },
+  { "id": "qb-arm-sleeve", "kind": "archetype", "number": "sg", "label": "a quarterback wearing one arm sleeve" },
+  { "id": "kicker-new-cleats", "kind": "archetype", "number": "sg", "label": "a kicker in brand-new cleats" },
+  { "id": "coach-laminated", "kind": "archetype", "number": "sg", "label": "a head coach with a laminated play sheet the size of a menu" },
+  { "id": "te-former-hoops", "kind": "archetype", "number": "sg", "label": "a tight end who played college basketball" },
+  { "id": "rb-contract-year", "kind": "archetype", "number": "sg", "label": "a running back in a contract year" },
+  { "id": "punter-tackle", "kind": "archetype", "number": "sg", "label": "a punter who has made a tackle" },
+  { "id": "mascot", "kind": "archetype", "number": "sg", "label": "the team mascot" },
+  { "id": "ref-microphone", "kind": "archetype", "number": "sg", "label": "a referee whose microphone stays on" }
 ]

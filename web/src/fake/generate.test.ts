@@ -1,9 +1,12 @@
+import { createHash } from 'node:crypto';
 import { describe, expect, test } from 'vitest';
 import { validateStat } from '../test-utils/validate-stat';
-import { banks, fillRanges, fillTemplate, generate, joinConditions, nextStat } from './generate';
+import { banks, decks, fillRanges, fillTemplate, generate, joinConditions, nextStat } from './generate';
 import { createRng } from './rng';
 
-const seeds = Array.from({ length: 2000 }, (_, i) => (i * 2654435761 >>> 0).toString(36));
+// Deck 0 (links made before the banks grew) and the newest deck.
+const legacy = Array.from({ length: 1000 }, (_, i) => (i * 2654435761 >>> 0).toString(36));
+const seeds = [...legacy, ...legacy.map((s) => (parseInt(s, 36) + (decks.length - 1) * 2 ** 32).toString(36))];
 
 describe('generate', () => {
   test('the same seed renders the same stat', () => {
@@ -83,6 +86,26 @@ describe('word banks', () => {
 
   test('at least 4 condition categories, so 4 conditions are always possible', () => {
     expect(new Set(banks.conditions.map((c) => c.category)).size).toBeGreaterThanOrEqual(4);
+  });
+});
+
+describe('decks', () => {
+  test('old links render exactly the card they did before the banks grew', () => {
+    const json = JSON.stringify(legacy.slice(0, 500).map(generate));
+    expect(createHash('sha256').update(json).digest('hex')).toBe('b4fdac981b9d07a242afadb9a29dec405e989acd6e5aee45b955716d39d297ef');
+  });
+
+  test('the newest deck covers every bank entry, and decks only grow', () => {
+    const newest = decks.at(-1);
+    for (const key of Object.keys(banks) as (keyof typeof banks)[]) {
+      expect(newest?.[key], key).toBe(banks[key].length);
+      for (let d = 1; d < decks.length; d++) expect(decks[d]?.[key], key).toBeGreaterThanOrEqual(decks[d - 1]?.[key] ?? 0);
+    }
+  });
+
+  test('new seeds reach the new entries', () => {
+    const subjects = new Set(seeds.slice(legacy.length).map((s) => generate(s).subject.label));
+    expect(subjects).toContain(banks.subjects.at(-1)?.label);
   });
 });
 

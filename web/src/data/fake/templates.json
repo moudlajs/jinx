@@ -4,5 +4,7 @@
   "{Conditions}, {subject} {metric}.",
   "{Subject} {metric} {conditions} ({sample}).",
   "Fun fact: {subject} {metric} {conditions}.",
-  "Over the last {years} seasons, {subject} {metric} {conditions}."
+  "Over the last {years} seasons, {subject} {metric} {conditions}.",
+  "Per the broadcast, {subject} {metric} {conditions}.",
+  "Not a typo: {subject} {metric} {conditions}."
 ]
