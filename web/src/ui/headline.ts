@@ -11,13 +11,13 @@ export function formatPct(p: number): string {
   return `${Number.isInteger(p) ? p : p.toFixed(1)}%`;
 }
 
-// Points per game has no number field; the engine always writes "<avg> points per game".
+// Fallback for stats.json written before numbers.average existed.
 function perGame(text: string): string | undefined {
   return /(\d+(?:\.\d+)?) points? per game/.exec(text)?.[1];
 }
 
 export function headline(stat: Stat): Headline {
-  const { record, percentage, count } = stat.numbers;
+  const { record, percentage, count, average } = stat.numbers;
   const key = `headline.${stat.metric.id}`;
   const label = stat.mode === 'real' && isKey(key) ? t(key) : stat.metric.label;
   if (record) {
@@ -26,6 +26,7 @@ export function headline(stat: Stat): Headline {
   }
   if (percentage !== undefined) return { value: formatPct(percentage), label };
   if (count !== undefined) return { value: String(count), label };
+  if (average !== undefined) return { value: average.toFixed(1), label };
   return { value: perGame(stat.text) ?? String(stat.numbers.sampleSize), label };
 }
 

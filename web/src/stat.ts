@@ -20,6 +20,7 @@ export interface Stat {
     record?: { wins: number; losses: number; ties?: number };
     percentage?: number;
     count?: number;
+    average?: number;
   };
   seasons?: { from: number; to: number };
   query?: string;

@@ -89,4 +89,5 @@ def test_zero_of_n_reads_naturally(con):
 def test_points_per_game_has_no_event_count(con):
     stat = text_of(con, pick(con, "points-per-game", "team", ["home"], "GB"))
     assert "count" not in stat["numbers"]
+    assert f"{stat['numbers']['average']:.1f} points per game" in stat["text"]
     assert "points per game" in stat["text"]

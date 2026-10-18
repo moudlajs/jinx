@@ -26,7 +26,12 @@ test('real per-game totals get a label that matches the total', () => {
   expect(headline(ints)).toEqual({ value: '24', label: 'interceptions thrown' });
 });
 
-test('points per game reads the average, not a number in the team name', () => {
+test('points per game uses numbers.average', () => {
+  const ppg = { ...base, metric: { id: 'points-per-game', label: 'points per game' }, numbers: { sampleSize: 11, average: 20 } };
+  expect(headline(ppg).value).toBe('20.0');
+});
+
+test('older stats.json without average reads it from the text, not the team name', () => {
   const ppg = {
     ...base,
     text: 'Since 2015, the 49ers average 9.8 points per game in 11 games on Mondays.',

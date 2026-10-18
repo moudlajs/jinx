@@ -106,7 +106,9 @@ def render(pick: Pick, names: dict[tuple[str, str], str], rng: random.Random) ->
         case "percentage":
             numbers["percentage"] = round(c.value, 1)
             numbers["count"] = k
-        case "rate" if combo.metric.id != "points-per-game":
+        case "rate" if combo.metric.id == "points-per-game":
+            numbers["average"] = round(c.value, 1)
+        case "rate":
             numbers["count"] = k
     key = f"{combo.key}|{row.subject}".encode()
     return {
