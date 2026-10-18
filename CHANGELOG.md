@@ -1,5 +1,24 @@
 # Changelog
 
+## [0.3.0](https://github.com/moudlajs/jinx/compare/v0.2.0...v0.3.0) (2026-10-18)
+
+
+### Features
+
+* **fake:** more word banks and quotes ([#64](https://github.com/moudlajs/jinx/issues/64)) ([8d4634b](https://github.com/moudlajs/jinx/commit/8d4634b5004245a34ec476fc000053dc0ebc91b1))
+* **schema:** numbers.average for points per game ([#63](https://github.com/moudlajs/jinx/issues/63)) ([273dce2](https://github.com/moudlajs/jinx/commit/273dce24687d461ebb6ac78d9c23f12127cafb33))
+* **web:** card deck layout, toss deal and plain-words card back ([#57](https://github.com/moudlajs/jinx/issues/57)) ([490f635](https://github.com/moudlajs/jinx/commit/490f6354d4ba1884512117474d4f4b34ee3709ca))
+
+
+### Bug Fixes
+
+* **web:** toss on every deal; calmer table and card back ([#61](https://github.com/moudlajs/jinx/issues/61)) ([a5604ea](https://github.com/moudlajs/jinx/commit/a5604ead950c01ec6a12e840f3eff2e04d4406ac))
+
+
+### Documentation
+
+* the site stays English only ([#62](https://github.com/moudlajs/jinx/issues/62)) ([7f40c40](https://github.com/moudlajs/jinx/commit/7f40c4001c248d3244d348173b7a502e38185fd3))
+
 ## [0.2.0](https://github.com/moudlajs/jinx/compare/v0.1.0...v0.2.0) (2026-10-10)
 
 
