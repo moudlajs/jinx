@@ -273,7 +273,8 @@ test('if stats.json fails, the toggle falls back to Fake', async ({ page }) => {
   await page.route('**/stats.json', (route) => route.fulfill({ status: 404 }));
   await page.goto('./');
   await page.getByRole('button', { name: 'Deal me a card' }).click();
-  await page.getByRole('radio', { name: 'Real' }).check();
+  // click, not check: the failed load can flip the radio back before check() looks.
+  await page.getByRole('radio', { name: 'Real' }).click();
   await expect(page.getByRole('status')).toContainText("Couldn't load the real stats");
   await expect(page.getByRole('radio', { name: 'Fake' })).toBeChecked();
   await expect(page.locator('#card')).toHaveAttribute('data-mode', 'fake');
