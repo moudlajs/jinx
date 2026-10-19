@@ -138,7 +138,32 @@ test('wide screens put the deck between two rails', async ({ page, isMobile }) =
   const [left, card, right] = [await box('.rail-left'), await box('#card'), await box('.rail-right')];
   expect(left.x + left.width).toBeLessThanOrEqual(card.x);
   expect(card.x + card.width).toBeLessThanOrEqual(right.x);
+  // The deck, not the card: the card may still be rising into place.
+  const [deck, deal] = [await box('#deck'), await box('#another')];
+  expect(deal.y).toBeGreaterThan(deck.y + deck.height);
+  expect(deal.x).toBeGreaterThanOrEqual(deck.x);
   await expect(page.locator('.footer-long').first()).toBeVisible();
+});
+
+test('the right rail keeps score and brings back an earlier card', async ({ page, isMobile }) => {
+  test.skip(isMobile, 'desktop layout');
+  await page.setViewportSize({ width: 1440, height: 900 });
+  await page.goto('./#abc12');
+  const first = (await statText(page).textContent()) ?? '';
+  await page.getByRole('button', { name: 'Deal another' }).click();
+  const visit = page.getByRole('region', { name: 'This visit' });
+  await expect(visit.locator('#visit-dealt')).toHaveText('2');
+  await expect(visit.locator('#visit-fake')).toHaveText('2 fake');
+  await visit.locator('#visit-last a').first().click();
+  await expect(statText(page)).toHaveText(first);
+  await expect(page).toHaveURL(/#abc12$/);
+  await expect(visit.locator('#visit-dealt')).toHaveText('2');
+});
+
+test('phones skip the scorecard', async ({ page }) => {
+  await page.setViewportSize({ width: 390, height: 844 });
+  await page.goto('./#abc12');
+  await expect(page.getByRole('region', { name: 'This visit' })).toBeHidden();
 });
 
 test('on a phone the footer is one short line', async ({ page }) => {

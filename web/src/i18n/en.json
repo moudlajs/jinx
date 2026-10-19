@@ -52,5 +52,14 @@
   "ticker.label": "On the board",
   "ticker.fake": "Fake",
   "footer.short": "Fake = satire",
-  "footer.shortData": "Real = nflverse"
+  "footer.shortData": "Real = nflverse",
+  "visit.title": "This visit",
+  "visit.dealt": "cards dealt",
+  "visit.dealtOne": "card dealt",
+  "visit.fake": "{n} fake",
+  "visit.real": "{n} real",
+  "visit.wildest": "Wildest so far",
+  "visit.last": "Your last cards",
+  "visit.empty": "Cards you deal land here. Click one to bring it back.",
+  "visit.note": "Counts reset when you leave. Nothing is saved."
 }
