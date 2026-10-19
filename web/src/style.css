@@ -834,9 +834,13 @@ h2 {
 
 .visit-bar-fake,
 .visit-bar-real {
-  flex: var(--fake, 0) 1 0;
-  background: var(--satire-bg);
+  flex-basis: 0;
   transition: flex-grow 400ms ease;
+}
+
+.visit-bar-fake {
+  flex-grow: var(--fake, 0);
+  background: var(--satire-bg);
 }
 
 .visit-bar-real {
