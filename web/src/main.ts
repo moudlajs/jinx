@@ -11,6 +11,8 @@ import type { Mode, Stat } from './stat';
 import { initThemeToggle } from './theme';
 import { renderCard } from './ui/card';
 import { interleave, renderTicker } from './ui/ticker';
+import { renderVisit } from './ui/visit';
+import { newVisit, see } from './visit';
 
 const byId = <T extends HTMLElement = HTMLElement>(id: string): T => {
   const el = document.getElementById(id);
@@ -51,6 +53,20 @@ const els = {
 const front = byId('card-front');
 const backFace = byId('card-back');
 let current: Stat | undefined;
+
+const visitEls = {
+  dealt: byId('visit-dealt'),
+  dealtLabel: byId('visit-dealt-label'),
+  fake: byId('visit-fake'),
+  real: byId('visit-real'),
+  bar: byId('visit-bar'),
+  wildest: byId('visit-wildest'),
+  wildestCard: byId('visit-wildest-card'),
+  last: byId('visit-last'),
+  empty: byId('visit-empty'),
+};
+let visit = newVisit();
+renderVisit(visitEls, visit);
 
 const status = byId('status');
 let statusTimer: number | undefined;
@@ -98,6 +114,8 @@ function toss(): void {
 function show(stat: Stat): void {
   clearStatus();
   toss();
+  visit = see(visit, current, stat);
+  renderVisit(visitEls, visit);
   current = stat;
   setTurned(false);
   renderCard(els, stat);

@@ -112,10 +112,6 @@
             </div>
           </article>
         </div>
-      </main>
-
-      <div class="rail rail-right">
-        <button type="button" class="theme-toggle" id="theme-toggle"></button>
         <div class="actions" id="card-actions" hidden>
           <button type="button" class="btn btn-primary btn-deal" id="another" data-i18n="card.another"></button>
           <button type="button" class="btn" id="copy">
@@ -128,6 +124,26 @@
           </button>
         </div>
         <p class="status" id="status" role="status"></p>
+      </main>
+
+      <div class="rail rail-right">
+        <button type="button" class="theme-toggle" id="theme-toggle"></button>
+        <section class="visit" aria-labelledby="visit-title">
+          <h2 class="rail-title" id="visit-title" data-i18n="visit.title"></h2>
+          <p class="visit-dealt"><span class="visit-count" id="visit-dealt">0</span> <span id="visit-dealt-label" data-i18n="visit.dealt"></span></p>
+          <div class="visit-split">
+            <p class="visit-split-labels"><span id="visit-fake"></span><span id="visit-real"></span></p>
+            <div class="visit-bar" id="visit-bar" aria-hidden="true"><span class="visit-bar-fake"></span><span class="visit-bar-real"></span></div>
+          </div>
+          <div class="visit-wildest" id="visit-wildest" hidden>
+            <h3 class="rail-title" data-i18n="visit.wildest"></h3>
+            <div id="visit-wildest-card"></div>
+          </div>
+          <h3 class="rail-title" data-i18n="visit.last"></h3>
+          <p class="visit-empty" id="visit-empty" data-i18n="visit.empty"></p>
+          <ul class="visit-last" id="visit-last"></ul>
+          <p class="visit-note" data-i18n="visit.note"></p>
+        </section>
       </div>
 
       <section class="ticker" id="ticker" aria-labelledby="ticker-label" hidden>
