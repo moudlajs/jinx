@@ -204,13 +204,16 @@ function showRound(stat: Stat): void {
 
 async function dealRound(): Promise<void> {
   const mine = ++ticket;
-  announce(t('real.loading'));
+  // Only a first, slow load is worth announcing; after that stats.json is cached.
+  const slow = window.setTimeout(() => announce(t('real.loading')), 300);
   try {
     const { stats } = await loadStats(STATS_URL);
+    clearTimeout(slow);
     if (mine !== ticket || !playing) return;
     const pool = stats.filter((s) => !tickerIds.has(s.id));
     showRound(Math.random() < 0.5 ? pickReal(pool.length ? pool : stats, round) : generate(randomSeed()));
   } catch {
+    clearTimeout(slow);
     if (mine !== ticket || !playing) return;
     stopPlay();
     setMode('fake');
