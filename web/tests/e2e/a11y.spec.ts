@@ -25,6 +25,17 @@ const states: [string, (page: Page) => Promise<void>][] = [
     await page.getByRole('button', { name: 'How we know' }).click();
     await expect(page.getByRole('button', { name: 'Turn back' })).toBeFocused();
   }],
+  ['play, face down', async (page) => {
+    await page.goto('./');
+    await page.getByRole('radio', { name: /^Play/ }).check();
+    await expect(page.locator('#card-badge')).toContainText('Fake or real?');
+  }],
+  ['play, answered', async (page) => {
+    await page.goto('./');
+    await page.getByRole('radio', { name: /^Play/ }).check();
+    await page.getByRole('button', { name: 'Fake', exact: true }).click();
+    await expect(page.getByRole('button', { name: 'Next card' })).toBeFocused();
+  }],
 ];
 
 for (const scheme of ['light', 'dark'] as const) {

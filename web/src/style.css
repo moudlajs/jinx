@@ -259,6 +259,17 @@ h2 {
   outline-offset: 2px;
 }
 
+/* Narrow phones: three mode options and the theme button share the top row with the logo. */
+@media (max-width: 419px) {
+  .mode-option {
+    padding: 0 0.6rem;
+  }
+
+  .theme-toggle {
+    padding: 0 0.7rem;
+  }
+}
+
 /* Buttons */
 .btn {
   display: inline-flex;
@@ -782,6 +793,93 @@ h2 {
   white-space: nowrap;
 }
 
+/* Play: the answer buttons, then the verdict and Next, in the same spot under the card. */
+.game-actions {
+  width: 100%;
+  max-width: 520px;
+  margin: 16px auto 0;
+}
+
+.answer {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 8px;
+}
+
+.btn-answer {
+  min-height: 60px;
+  border-width: 2px;
+  font-size: 1.15rem;
+  font-weight: 800;
+}
+
+#answer-a[data-tone='fake'] {
+  border-color: var(--satire-bg);
+  background: color-mix(in srgb, var(--satire-bg) 10%, transparent);
+}
+
+#answer-b[data-tone='real'] {
+  border-color: var(--real-bg);
+  background: color-mix(in srgb, var(--real-bg) 10%, transparent);
+}
+
+.verdict-row {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 8px;
+}
+
+.verdict {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  min-height: 60px;
+  margin: 0;
+  padding: 6px 16px;
+  border-radius: var(--radius);
+  background: var(--chip);
+  font-size: 0.85rem;
+  line-height: 1.3;
+  animation: pop 380ms cubic-bezier(0.3, 0.1, 0.2, 1);
+}
+
+.verdict strong {
+  font-stretch: 80%;
+  font-size: 1.3rem;
+  font-weight: 900;
+}
+
+.verdict.right {
+  background: var(--accent);
+  color: var(--on-accent);
+}
+
+@keyframes pop {
+  from {
+    transform: scale(0.94);
+    opacity: 0;
+  }
+}
+
+.btn-next {
+  min-height: 60px;
+  padding: 0 1.3rem;
+  font-size: 1.1rem;
+}
+
+.scoreline {
+  margin: 10px 0 0;
+  color: var(--muted);
+  font-size: 0.875rem;
+  font-variant-numeric: tabular-nums;
+  text-align: center;
+}
+
+.badge-hidden {
+  background: var(--chip);
+  color: var(--text);
+}
+
 /* This visit: wide screens only, in the right rail. */
 .visit {
   display: none;
@@ -933,6 +1031,42 @@ h2 {
   overflow: hidden;
   font-size: 0.85rem;
   line-height: 1.3;
+}
+
+.score {
+  display: none;
+  flex: 1;
+  flex-direction: column;
+  gap: 14px;
+  margin-top: 20px;
+}
+
+.score-details {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  margin: 0;
+  padding-top: 16px;
+  border-top: 1px solid var(--border);
+  font-size: 0.95rem;
+}
+
+.score-dots {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.score-dot {
+  width: 20px;
+  height: 20px;
+  border: 2px solid var(--dot-off);
+  border-radius: 999px;
+}
+
+.score-dot.on {
+  border-color: var(--num);
+  background: var(--num);
 }
 
 /* Short screens keep fewer cards in the pile rather than scrolling. */
@@ -1144,8 +1278,18 @@ h2 {
     font-size: 1.2rem;
   }
 
-  .visit {
+  .visit,
+  .score {
     display: flex;
+  }
+
+  .game-actions {
+    max-width: 540px;
+    margin-top: 22px;
+  }
+
+  .scoreline {
+    display: none;
   }
 
   .ticker {

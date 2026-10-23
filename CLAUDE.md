@@ -7,7 +7,8 @@ to you too.
 
 `jinx`: cursed NFL stats, a parody of broadcast-style insights, for the
 Czech/Slovak NFL community (nfl.cz Discord). A toy, not a competition: no
-accounts, logins, scores, cookies or trackers on the web.
+accounts, logins, leaderboards, cookies or trackers on the web. Play scores
+stay in the visitor's browser (localStorage) and are never sent anywhere.
 
 ```
 web/      Vite + TypeScript, no framework. Static, deployed to GitHub Pages.
@@ -21,7 +22,10 @@ engine/   (v0.2) Python 3.12 + uv + DuckDB over nflverse data → stats.json
 ## The rules
 
 1. **Satire is labelled.** Every Fake stat carries the satire badge on the
-   card and in copied/shared text.
+   card and in copied/shared text. The one exception is Play: a card may be
+   face down (label hidden) until the player answers, the page says some
+   cards are made up, and a face-down card is never copied, shared or put
+   in the URL.
 2. **No real players in Fake.** Teams, positions, archetypes only.
 3. **Real numbers never come from an LLM or randomness** (v0.2).
 4. **Small.** No framework, no runtime dependencies without asking, no
