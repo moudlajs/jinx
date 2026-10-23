@@ -104,6 +104,7 @@ export function createOverUnder(store: PlayStore, save: () => void, random: () =
       };
     },
     nextLabel: () => t('play.ou.next'),
+    status: () => t('play.menu.ouStatus', { w: String(store.ou.w), l: String(store.ou.l) }),
     view() {
       const { w, l } = store.ou;
       const n = { w: String(w), l: String(l), pct: String(w + l ? Math.round((w / (w + l)) * 100) : 0) };

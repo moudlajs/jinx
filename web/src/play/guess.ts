@@ -54,6 +54,7 @@ export function createGuess(store: PlayStore, save: () => void, random: () => nu
       return { ok, title: t(ok ? 'play.right' : 'play.wrong'), sub: t(stat.mode === 'fake' ? 'play.wasFake' : 'play.wasReal') };
     },
     nextLabel: () => t('play.next'),
+    status: () => t('play.menu.guessStatus', { best: String(score.best) }),
     view() {
       const n = { streak: String(score.streak), best: String(score.best), k: String(score.right), n: String(score.total) };
       return {

@@ -54,6 +54,8 @@ export interface Game {
   answer(stat: Stat, choice: string): Verdict;
   nextLabel(): string;
   view(): ScoreView;
+  // One line for the Play menu.
+  status(): string;
   progress?(): (boolean | undefined)[];
   end?(): EndView;
 }

@@ -119,5 +119,18 @@
   "play.ou.pct": "{pct}% right",
   "play.ou.bankroll": "Bankroll: $0, always",
   "play.ou.scoreline": "Record {w}–{l} · {pct}% right · Bankroll $0",
-  "play.empty": "No real stats with a number to set a line on. Try Fake or Real."
+  "play.empty": "No real stats with a number to set a line on. Try Fake or Real.",
+  "play.menu.title": "Pick a game",
+  "play.menu.dailyDesc": "Five cards, the same for everyone today. Share your row.",
+  "play.menu.guessDesc": "Call each card Fake or Real. Keep the streak alive.",
+  "play.menu.ouDesc": "Real stats, numbers hidden. Take the over or the under.",
+  "play.menu.dailyNew": "No. {day} · not played yet",
+  "play.menu.dailyPart": "No. {day} · {n} of 5 played",
+  "play.menu.dailyDone": "No. {day} · done, {k}/5",
+  "play.menu.guessStatus": "Best streak: {best}",
+  "play.menu.ouStatus": "Record: {w}–{l}",
+  "play.menu.note": "Scores stay on this device. Nothing is sent anywhere.",
+  "play.menu.back": "All games",
+  "play.menu.scoresTitle": "Your scores",
+  "play.menu.daysLabel": "days of Daily Five"
 }

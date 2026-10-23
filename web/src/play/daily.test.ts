@@ -65,6 +65,8 @@ test('a game resumes where it stopped and ends after five', () => {
   expect(again.deal(stats, ctx)).toBeUndefined();
   expect(store.daily['3']).toEqual([true, false, false, false, false]);
   expect(again.end?.()).toMatchObject({ big: '1/5', text: 'Rough day at the office.' });
+  expect(again.status()).toBe('No. 3 · done, 1/5');
+  expect(createDaily({ guessBest: 0, daily: {}, ou: { w: 0, l: 0 } }, () => {}, 'u', now).status()).toBe('No. 3 · not played yet');
 });
 
 test('an open tab moves on at midnight, but finishes a half-played five first', () => {

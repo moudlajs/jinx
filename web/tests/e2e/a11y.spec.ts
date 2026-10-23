@@ -25,26 +25,26 @@ const states: [string, (page: Page) => Promise<void>][] = [
     await page.getByRole('button', { name: 'How we know' }).click();
     await expect(page.getByRole('button', { name: 'Turn back' })).toBeFocused();
   }],
-  ['play, face down', async (page) => {
+  ['play menu', async (page) => {
     await page.goto('./');
     await page.getByRole('radio', { name: /^Play/ }).check();
+    await expect(page.locator('#play-menu')).toBeVisible();
+  }],
+  ['play, face down', async (page) => {
+    await page.goto('./#play-guess');
     await expect(page.locator('#card-badge')).toContainText('Fake or real?');
   }],
   ['play, answered', async (page) => {
-    await page.goto('./');
-    await page.getByRole('radio', { name: /^Play/ }).check();
+    await page.goto('./#play-guess');
     await page.getByRole('button', { name: 'Fake', exact: true }).click();
     await expect(page.getByRole('button', { name: 'Next card' })).toBeFocused();
   }],
   ['over / under, face down', async (page) => {
-    await page.goto('./');
-    await page.getByRole('radio', { name: /^Play/ }).check();
-    await page.getByRole('radio', { name: 'Over / Under' }).check();
+    await page.goto('./#play-overunder');
     await expect(page.locator('#card-line')).toBeVisible();
   }],
   ['daily five, done', async (page) => {
-    await page.goto('./');
-    await page.getByRole('radio', { name: /^Play/ }).check();
+    await page.goto('./#play-daily');
     for (let i = 0; i < 5; i++) {
       await page.getByRole('button', { name: 'Real', exact: true }).click();
       await page.getByRole('button', { name: i === 4 ? 'See my row' : 'Next card' }).click();

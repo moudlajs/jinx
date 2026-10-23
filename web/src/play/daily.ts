@@ -77,6 +77,11 @@ export function createDaily(store: PlayStore, save: () => void, url: string, now
       return { ok, title: t(ok ? 'play.right' : 'play.wrong'), sub: t(stat.mode === 'fake' ? 'play.wasFake' : 'play.wasReal') };
     },
     nextLabel: () => t(results().length >= FIVE ? 'play.daily.seeRow' : 'play.next'),
+    status() {
+      const n = { day: key, n: String(results().length), k: String(right()) };
+      if (results().length === 0) return t('play.menu.dailyNew', n);
+      return t(results().length < FIVE ? 'play.menu.dailyPart' : 'play.menu.dailyDone', n);
+    },
     view() {
       const n = { day: key, k: String(right()), n: String(results().length), days: String(Object.keys(store.daily).length) };
       return {
