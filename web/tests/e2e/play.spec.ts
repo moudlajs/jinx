@@ -192,3 +192,13 @@ test('the line goes away outside Over / Under', async ({ page }) => {
   await page.getByRole('radio', { name: /^Fake(?! or)/ }).check();
   await expect(page.locator('#card-line')).toBeHidden();
 });
+
+test('Space on the menu does not deal a card over it', async ({ page }) => {
+  await page.goto('./#play-guess');
+  await page.getByRole('button', { name: 'Fake', exact: true }).click();
+  await page.getByRole('button', { name: 'All games' }).click();
+  await page.locator('body').click({ position: { x: 1, y: 1 } });
+  await page.keyboard.press('Space');
+  await expect(page.locator('#play-menu')).toBeVisible();
+  await expect(page.locator('#card')).toBeHidden();
+});

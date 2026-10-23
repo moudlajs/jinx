@@ -309,8 +309,11 @@ function startPlay(id?: GameId): void {
 
 function selectGame(id: GameId): Promise<void> {
   setGame(id);
+  answered = false;
   play.menu.hidden = true;
   play.top.hidden = false;
+  play.answer.hidden = true;
+  play.verdictRow.hidden = true;
   // A game's link is fine to keep: it names the game, not a face-down card.
   history.replaceState(null, '', `${location.pathname}${location.search}#play-${id}`);
   return dealRound();
@@ -321,6 +324,8 @@ function showMenu(): void {
   ++ticket;
   clearStatus();
   round = undefined;
+  // Space deals only after an answer; on the menu there's nothing to answer.
+  answered = false;
   els.card.hidden = true;
   hero.hidden = true;
   cardLine.hidden = true;
