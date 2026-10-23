@@ -7,8 +7,9 @@ to you too.
 
 `jinx`: cursed NFL stats, a parody of broadcast-style insights, for the
 Czech/Slovak NFL community (nfl.cz Discord). A toy, not a competition: no
-accounts, logins, leaderboards, cookies or trackers on the web. Play scores
-stay in the visitor's browser (localStorage) and are never sent anywhere.
+accounts, logins, leaderboards, cookies or ad trackers on the web. Play scores
+stay in the visitor's browser (localStorage) and are never sent anywhere. The
+only third-party script is Cloudflare Web Analytics (cookieless page counts).
 
 ```
 web/      Vite + TypeScript, no framework. Static, deployed to GitHub Pages.

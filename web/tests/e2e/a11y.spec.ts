@@ -1,6 +1,6 @@
 // axe over every state a visitor can reach, in both themes. Reduced motion turns animations off, so no settling.
 import AxeBuilder from '@axe-core/playwright';
-import { expect, test, type Page } from '@playwright/test';
+import { expect, test, type Page } from './fixtures';
 
 const states: [string, (page: Page) => Promise<void>][] = [
   ['cover', async (page) => {
