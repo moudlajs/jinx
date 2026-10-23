@@ -8,11 +8,14 @@ import type { Game } from './game';
 import type { PlayStore } from './store';
 
 export const FIVE = 5;
-// No. 1 is launch day.
+// No. 1 is launch day. Days turn over at midnight in Prague, for everyone, so the five match
+// across time zones; the community it's for lives there.
 const LAUNCH = Date.UTC(2026, 9, 23);
+const PRAGUE = new Intl.DateTimeFormat('en-CA', { timeZone: 'Europe/Prague', year: 'numeric', month: '2-digit', day: '2-digit' });
 
 export function dayNumber(now: Date): number {
-  return Math.floor((Date.UTC(now.getFullYear(), now.getMonth(), now.getDate()) - LAUNCH) / 86_400_000) + 1;
+  const [y, m, d] = PRAGUE.format(now).split('-').map(Number) as [number, number, number];
+  return Math.floor((Date.UTC(y, m - 1, d) - LAUNCH) / 86_400_000) + 1;
 }
 
 // Two or three Fake among five. Fake seeds come from the newest deck and Real picks from this week's
@@ -45,6 +48,7 @@ export function createDaily(store: PlayStore, save: () => void, url: string, now
       { value: 'fake', label: t('play.fake'), tone: 'fake' },
       { value: 'real', label: t('play.real'), tone: 'real' },
     ],
+    // The ticker isn't consulted: the five must be the same for everyone. The ticker avoids them instead.
     deal(stats) {
       five ??= dailyFive(day, stats);
       return five[results().length];

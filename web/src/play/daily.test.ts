@@ -13,11 +13,12 @@ const real = (n: number): Stat[] =>
     numbers: { sampleSize: 10 },
   }));
 
-test('day numbers count local calendar days from launch', () => {
-  expect(dayNumber(new Date(2026, 9, 23, 0, 5))).toBe(1);
-  expect(dayNumber(new Date(2026, 9, 23, 23, 55))).toBe(1);
-  expect(dayNumber(new Date(2026, 9, 24, 0, 1))).toBe(2);
-  expect(dayNumber(new Date(2027, 0, 1))).toBe(71);
+test('day numbers count Prague calendar days from launch, wherever you are', () => {
+  // Prague is UTC+2 until 25 October 2026, then UTC+1.
+  expect(dayNumber(new Date(Date.UTC(2026, 9, 22, 22, 5)))).toBe(1);
+  expect(dayNumber(new Date(Date.UTC(2026, 9, 23, 21, 55)))).toBe(1);
+  expect(dayNumber(new Date(Date.UTC(2026, 9, 23, 22, 1)))).toBe(2);
+  expect(dayNumber(new Date(Date.UTC(2026, 11, 31, 23, 30)))).toBe(71);
 });
 
 test('the same day gives the same five, whatever order stats.json lists them in', () => {
@@ -49,7 +50,7 @@ test('the share row has the score and squares, never card text', () => {
 
 test('a game resumes where it stopped and ends after five', () => {
   const store = { guessBest: 0, daily: {} as Record<string, boolean[]> };
-  const now = () => new Date(2026, 9, 25);
+  const now = () => new Date(Date.UTC(2026, 9, 25, 12));
   const stats = real(40);
   const g = createDaily(store, () => {}, 'u', now);
   const ctx = { previous: undefined, ticker: new Set<string>() };

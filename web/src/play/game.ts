@@ -1,12 +1,12 @@
 // What every Play game provides; main.ts runs the same deal → face down → answer → reveal loop for each.
 import type { Stat } from '../stat';
 
-export type GameId = 'daily' | 'guess' | 'overunder';
+export type GameId = 'daily' | 'guess';
 
 export interface Choice {
   value: string;
   label: string;
-  tone: 'fake' | 'real' | 'line';
+  tone: 'fake' | 'real';
 }
 
 export interface Verdict {

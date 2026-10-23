@@ -4,7 +4,7 @@ import { generate, nextStat } from './fake/generate';
 import { randomSeed } from './fake/seed';
 import { parseHash, setHash } from './hash';
 import { applyI18n, t } from './i18n';
-import { createDaily } from './play/daily';
+import { createDaily, dailyFive, dayNumber } from './play/daily';
 import type { Game } from './play/game';
 import { createGuess } from './play/guess';
 import { loadPlay, savePlay } from './play/store';
@@ -442,9 +442,12 @@ async function fillTicker(): Promise<void> {
   renderTicker(track, fake);
   try {
     const { stats } = await loadStats(STATS_URL);
+    // Today's Daily Five stays off the ticker, or it would give those cards away.
+    const daily = new Set(dailyFive(dayNumber(new Date()), stats).map((s) => s.id));
+    const pool = stats.filter((s) => !daily.has(s.id));
     const real: Stat[] = [];
-    while (real.length < Math.min(TICKER_SIZE, stats.length)) {
-      const pick = pickReal(stats);
+    while (real.length < Math.min(TICKER_SIZE, pool.length)) {
+      const pick = pickReal(pool);
       if (!real.includes(pick)) real.push(pick);
     }
     tickerIds = new Set(real.map((s) => s.id));
