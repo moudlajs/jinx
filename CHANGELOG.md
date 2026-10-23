@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.5.0](https://github.com/moudlajs/jinx/compare/v0.4.0...v0.5.0) (2026-10-23)
+
+
+### Features
+
+* **web:** anonymous page counts via Cloudflare Web Analytics ([#80](https://github.com/moudlajs/jinx/issues/80)) ([5b29ae1](https://github.com/moudlajs/jinx/commit/5b29ae1c5da230b4828060d8e5d1f81a6838651c))
+
 ## [0.4.0](https://github.com/moudlajs/jinx/compare/v0.3.0...v0.4.0) (2026-10-23)
 
 
