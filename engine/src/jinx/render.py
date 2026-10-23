@@ -77,6 +77,8 @@ def render(pick: Pick, names: dict[tuple[str, str], str], rng: random.Random) ->
     kind = combo.subject.kind
     name = names.get((combo.subject.id, row.subject), row.subject)
     k = row.values.get("hits", row.values.get("total", 0))
+    # Over / Under hides these words as well as the numbers (web/src/play/overunder.ts, hideWords):
+    # a new word that gives a number away needs adding there too.
     slots = {
         "record": _record(row.values) if "wins" in row.values else "",
         "avg": f"{c.value:.1f}",
