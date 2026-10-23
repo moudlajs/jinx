@@ -186,6 +186,7 @@ const scoreEls = {
   dots: byId('score-dots'),
 };
 const gameInputs = [...document.querySelectorAll<HTMLInputElement>('input[name="game"]')];
+const endShare = byId('end-share');
 const turn = byId('turn');
 const store = loadPlay();
 const save = () => savePlay(store);
@@ -343,7 +344,6 @@ async function copyRow(): Promise<void> {
 }
 byId('end-copy').addEventListener('click', () => void copyRow());
 // Like the card's Share button: only where the browser can share, Copy otherwise.
-const endShare = byId('end-share');
 endShare.hidden = typeof navigator.share !== 'function';
 endShare.addEventListener('click', () => {
   navigator.share({ title: t('share.title'), text: endShare.dataset.text ?? '' }).catch((err: unknown) => {
