@@ -132,8 +132,7 @@ jobs:
                schema drift between schema/stat.schema.json and the TS types.
             3. Security: the URL hash and any data rendered into the DOM must
                go through textContent, never innerHTML. No trackers, cookies,
-               third-party scripts or fonts, except the owner-approved
-               Cloudflare Web Analytics beacon (cookieless page counts, #79).
+               third-party scripts or fonts.
             4. Accessibility and mobile: contrast, visible focus, keyboard,
                prefers-reduced-motion, layout at 360px wide.
             5. Over-engineering. No framework, no new runtime dependencies,
