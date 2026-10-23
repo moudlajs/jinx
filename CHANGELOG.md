@@ -1,5 +1,21 @@
 # Changelog
 
+## [0.4.0](https://github.com/moudlajs/jinx/compare/v0.3.0...v0.4.0) (2026-10-23)
+
+
+### Features
+
+* **web:** Daily Five ([#74](https://github.com/moudlajs/jinx/issues/74)) ([d171e35](https://github.com/moudlajs/jinx/commit/d171e35a610e70797e127ca6179551f07360e125))
+* **web:** Over / Under ([#75](https://github.com/moudlajs/jinx/issues/75)) ([653088d](https://github.com/moudlajs/jinx/commit/653088dc97d0b608b02024069e398b0e7b38b9e5))
+* **web:** Play menu and direct links to each game ([#76](https://github.com/moudlajs/jinx/issues/76)) ([d7c9385](https://github.com/moudlajs/jinx/commit/d7c938598b62ec4656d6e2a3e9432b4c102a7fbb))
+* **web:** Play mode with Fake or Real ([#73](https://github.com/moudlajs/jinx/issues/73)) ([2f9dbd4](https://github.com/moudlajs/jinx/commit/2f9dbd40de028acd0e586249aa978127cedd27b8))
+* **web:** right rail shows this visit's scorecard and your last cards ([#67](https://github.com/moudlajs/jinx/issues/67)) ([b686fe9](https://github.com/moudlajs/jinx/commit/b686fe946ccc047e5d8036e3c2bc4380f2a0aa0b))
+
+
+### Bug Fixes
+
+* **deps:** bump vite to 8.3.3 and vitest to 5.0.3 ([#78](https://github.com/moudlajs/jinx/issues/78)) ([eff9c23](https://github.com/moudlajs/jinx/commit/eff9c2303e4251ce5b0302174f024906f39a3b42))
+
 ## [0.3.0](https://github.com/moudlajs/jinx/compare/v0.2.0...v0.3.0) (2026-10-18)
 
 
