@@ -40,14 +40,14 @@ export function createDaily(store: PlayStore, save: () => void, url: string, now
   let day = dayNumber(now());
   let key = String(day);
   let five: Stat[] | undefined;
-  // A card dealt before midnight is answered for the day it was dealt.
-  let out = false;
-  // A tab left open past midnight moves on to the new five, unless one is half played.
-  // Every read goes through here, so the menu and the score never show yesterday.
+  // A tab left open past midnight moves on to the new five, but only between games: never with a
+  // card out (it counts for the day it was dealt), mid-five, or before the finished row was shown.
+  let phase: 'idle' | 'out' | 'ending' | 'ended' = 'idle';
+  // Every read goes through here, so nothing shows yesterday once the day has moved on.
   const results = () => {
     const today = dayNumber(now());
     const done = (store.daily[key] ?? []).length;
-    if (today !== day && !out && (done === 0 || done >= FIVE)) {
+    if (today !== day && phase === 'idle' && (done === 0 || done >= FIVE)) {
       day = today;
       key = String(day);
       five = undefined;
@@ -63,15 +63,16 @@ export function createDaily(store: PlayStore, save: () => void, url: string, now
     ],
     // The ticker isn't consulted: the five must be the same for everyone. The ticker avoids them instead.
     deal(stats) {
+      if (phase === 'ended') phase = 'idle';
       const index = results().length;
       five ??= dailyFive(day, stats);
-      out = index < FIVE;
+      if (index < FIVE) phase = 'out';
       return five[index];
     },
     answer(stat, choice) {
       const ok = choice === stat.mode;
       store.daily[key] = [...results(), ok].slice(0, FIVE);
-      out = false;
+      phase = results().length >= FIVE ? 'ending' : 'idle';
       save();
       return { ok, title: t(ok ? 'play.right' : 'play.wrong'), sub: t(stat.mode === 'fake' ? 'play.wasFake' : 'play.wasReal') };
     },
@@ -89,6 +90,7 @@ export function createDaily(store: PlayStore, save: () => void, url: string, now
     },
     progress: () => Array.from({ length: FIVE }, (_, i) => results()[i]),
     end() {
+      phase = 'ended';
       const rank = `play.daily.rank${right()}`;
       return {
         kicker: t('play.daily.kicker', { day: key }),

@@ -77,6 +77,10 @@ test('an open tab moves on at midnight, but finishes a half-played five first', 
   clock = new Date(Date.UTC(2026, 9, 25, 23, 10));
   for (let i = 0; i < 4; i++) g.answer(g.deal(stats, ctx) as Stat, 'fake');
   expect(store.daily['3']).toHaveLength(5);
+  // The finished row comes first, and the score stays on that day while it shows.
+  expect(g.deal(stats, ctx)).toBeUndefined();
+  expect(g.end?.()?.kicker).toBe('Daily Five · No. 3');
+  expect(g.view().details[0]).toBe('No. 3');
   expect(g.deal(stats, ctx)).toBeDefined();
   expect(g.view().details[0]).toBe('No. 4');
 });
