@@ -43,11 +43,11 @@ export function hideNumbers(text: string, hide: string[]): string {
     .join('');
 }
 
-// The words around a number are tells too: "no interceptions" is a 0, "just" leans Under,
-// "1 interception" is singular.
+// The words around a number are tells too. The engine (render.py) writes a 0 as "no interceptions"
+// or "none of 10", adds "just" to low ones, and makes 1 singular.
 function hideWords(text: string, value: number): string {
   let out = text.replace(/\bjust /g, '');
-  if (value === 0) out = out.replace(/\bno (?=\w)/, '?? ');
+  if (value === 0) out = out.replace(/\bno (?=\w)/, '?? ').replace(/\bnone of\b/, '?? of');
   return out.replace(/\?\? interception\b(?!s)/, '?? interceptions').replace(/\?\? touchdown pass\b(?!es)/, '?? touchdown passes');
 }
 

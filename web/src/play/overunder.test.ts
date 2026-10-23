@@ -25,6 +25,8 @@ test('word tells go too: "no", "just" and a singular interception', () => {
   expect(lineFor(none)?.text).toBe('The Chiefs have thrown ?? interceptions in 8 games.');
   const one = stat({ sampleSize: 8, count: 1 }, 'Jalen Hurts has thrown just 1 interception in 8 games.', 'real-00000000000b', 'interceptions');
   expect(lineFor(one)?.text).toBe('Jalen Hurts has thrown ?? interceptions in 8 games.');
+  const zero = stat({ sampleSize: 10, percentage: 0, count: 0 }, 'Since 2018, the Browns have made none of 10 field goals (0%) on Mondays.', 'real-00000000000c');
+  expect(lineFor(zero)?.text).toBe('Since 2018, the Browns have made ?? of 10 field goals (??) on Mondays.');
 });
 
 test('the line is on the half, never the value, and the same for the same stat', () => {
