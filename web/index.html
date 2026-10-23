@@ -61,13 +61,15 @@
 
       <main class="stage" id="app">
         <div class="play-top" id="play-top" hidden>
-          <fieldset class="games" id="games">
-            <legend class="visually-hidden" data-i18n="play.gameLabel"></legend>
-            <label><input type="radio" name="game" value="daily" /><span data-i18n="play.daily.name"></span></label>
-            <label><input type="radio" name="game" value="guess" /><span data-i18n="play.guess.name"></span></label>
-            <label><input type="radio" name="game" value="overunder" /><span data-i18n="play.ou.name"></span></label>
+          <div class="games-row">
+            <fieldset class="games" id="games">
+              <legend class="visually-hidden" data-i18n="play.gameLabel"></legend>
+              <label><input type="radio" name="game" value="daily" /><span data-i18n="play.daily.name"></span></label>
+              <label><input type="radio" name="game" value="guess" /><span data-i18n="play.guess.name"></span></label>
+              <label><input type="radio" name="game" value="overunder" /><span data-i18n="play.ou.name"></span></label>
+            </fieldset>
             <button type="button" class="games-back" id="games-back" data-i18n="play.menu.back"></button>
-          </fieldset>
+          </div>
           <div class="progress" id="progress" aria-hidden="true"></div>
         </div>
         <div class="deck" id="deck">

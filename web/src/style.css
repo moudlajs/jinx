@@ -826,6 +826,13 @@ h2 {
   margin: 0 auto 16px;
 }
 
+.games-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px;
+}
+
 .games {
   display: flex;
   flex-wrap: wrap;
