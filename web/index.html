@@ -60,6 +60,14 @@
       </div>
 
       <main class="stage" id="app">
+        <div class="play-top" id="play-top" hidden>
+          <fieldset class="games" id="games">
+            <legend class="visually-hidden" data-i18n="play.gameLabel"></legend>
+            <label><input type="radio" name="game" value="daily" /><span data-i18n="play.daily.name"></span></label>
+            <label><input type="radio" name="game" value="guess" /><span data-i18n="play.guess.name"></span></label>
+          </fieldset>
+          <div class="progress" id="progress" aria-hidden="true"></div>
+        </div>
         <div class="deck" id="deck">
           <span class="deck-under deck-under-1" aria-hidden="true"></span>
           <span class="deck-under deck-under-2" aria-hidden="true"></span>
@@ -70,6 +78,21 @@
               <p class="cover-line" data-i18n="hero.cover"></p>
               <button type="button" class="btn btn-primary" id="generate" data-i18n="hero.generate"></button>
               <p class="hint" data-i18n="hero.hint"></p>
+            </div>
+          </section>
+
+          <section class="daily-end" id="daily-end" aria-labelledby="end-big" hidden>
+            <div class="cover-face end-face">
+              <p class="end-kicker" id="end-kicker"></p>
+              <h2 class="end-big" id="end-big"></h2>
+              <p class="end-text" id="end-text"></p>
+              <div class="end-squares" id="end-squares" aria-hidden="true"></div>
+              <div class="end-actions">
+                <button type="button" class="btn btn-primary" id="end-share" data-i18n="play.daily.share"></button>
+                <button type="button" class="btn" id="end-copy" data-i18n="card.copy"></button>
+              </div>
+              <p class="end-note" data-i18n="play.daily.tomorrow"></p>
+              <button type="button" class="btn" id="end-guess" data-i18n="play.daily.toGuess"></button>
             </div>
           </section>
 
