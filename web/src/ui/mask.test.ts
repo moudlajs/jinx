@@ -24,7 +24,7 @@ function elements(): CardElements {
 
 // What a player could read off the card, or off the DOM with Inspect, that differs between Fake and Real.
 function tells(els: CardElements): string {
-  const { card, text, big, bigLabel, ...rest } = els;
+  const { card, text: _text, big: _big, bigLabel: _bigLabel, ...rest } = els;
   return JSON.stringify([card.dataset, Object.values(rest).map((el) => [el.textContent, el.className, el.getAttribute('aria-label')])]);
 }
 
