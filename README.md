@@ -28,7 +28,8 @@ technically true and completely useless.
 
   A card's label stays hidden only until you answer.
 
-No accounts, no cookies, no trackers. Play scores stay in your browser.
+No accounts, no cookies, no ads. Play scores stay in your browser. Page
+views are counted anonymously with Cloudflare Web Analytics.
 
 ## Local development
 

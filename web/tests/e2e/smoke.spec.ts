@@ -1,4 +1,4 @@
-import { expect, test } from '@playwright/test';
+import { expect, test } from './fixtures';
 
 const statText = (page: import('@playwright/test').Page) => page.locator('#stat-text');
 
@@ -278,4 +278,23 @@ test('if stats.json fails, the toggle falls back to Fake', async ({ page }) => {
   await expect(page.getByRole('status')).toContainText("Couldn't load the real stats");
   await expect(page.getByRole('radio', { name: 'Fake' })).toBeChecked();
   await expect(page.locator('#card')).toHaveAttribute('data-mode', 'fake');
+});
+
+test('analytics beacon is on the page, deferred, and never reached in tests', async ({ page }) => {
+  const reached: string[] = [];
+  const blocked: string[] = [];
+  page.on('requestfinished', (r) => {
+    if (/cloudflareinsights\.com/.test(r.url())) reached.push(r.url());
+  });
+  page.on('requestfailed', (r) => {
+    if (/cloudflareinsights\.com/.test(r.url())) blocked.push(r.url());
+  });
+  await page.goto('./');
+  const beacon = page.locator('script[src="https://static.cloudflareinsights.com/beacon.min.js"]');
+  await expect(beacon).toHaveCount(1);
+  await expect(beacon).toHaveAttribute('defer', '');
+  await expect(beacon).toHaveAttribute('data-cf-beacon', /"token"/);
+  await expect(page.locator('#quote-text')).not.toBeEmpty();
+  await expect.poll(() => blocked.length).toBeGreaterThan(0);
+  expect(reached).toEqual([]);
 });

@@ -9,6 +9,9 @@ to you too.
 Czech/Slovak NFL community (nfl.cz Discord). A toy, not a competition: no
 accounts, logins, leaderboards, cookies or trackers on the web. Play scores
 stay in the visitor's browser (localStorage) and are never sent anywhere.
+One owner-approved exception (#79): the Cloudflare Web Analytics beacon, for
+cookieless, anonymous page counts. It sees page views, not Play scores or
+choices; nothing else third-party may be added without the owner.
 
 ```
 web/      Vite + TypeScript, no framework. Static, deployed to GitHub Pages.
