@@ -37,8 +37,8 @@ export function shareRow(day: number, results: boolean[], url: string): string {
 }
 
 export function createDaily(store: PlayStore, save: () => void, url: string, now: () => Date = () => new Date()): Game {
-  const day = dayNumber(now());
-  const key = String(day);
+  let day = dayNumber(now());
+  let key = String(day);
   let five: Stat[] | undefined;
   const results = () => store.daily[key] ?? [];
   const right = () => results().filter(Boolean).length;
@@ -50,6 +50,13 @@ export function createDaily(store: PlayStore, save: () => void, url: string, now
     ],
     // The ticker isn't consulted: the five must be the same for everyone. The ticker avoids them instead.
     deal(stats) {
+      // A tab left open past midnight moves on to the new five, unless one is half played.
+      const today = dayNumber(now());
+      if (today !== day && (results().length === 0 || results().length >= FIVE)) {
+        day = today;
+        key = String(day);
+        five = undefined;
+      }
       five ??= dailyFive(day, stats);
       return five[results().length];
     },

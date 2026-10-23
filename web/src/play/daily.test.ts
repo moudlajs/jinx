@@ -66,3 +66,17 @@ test('a game resumes where it stopped and ends after five', () => {
   expect(store.daily['3']).toEqual([true, false, false, false, false]);
   expect(again.end?.()).toMatchObject({ big: '1/5', text: 'Rough day at the office.' });
 });
+
+test('an open tab moves on at midnight, but finishes a half-played five first', () => {
+  const store = { guessBest: 0, daily: {} as Record<string, boolean[]> };
+  let clock = new Date(Date.UTC(2026, 9, 25, 21, 50));
+  const g = createDaily(store, () => {}, 'u', () => clock);
+  const ctx = { previous: undefined, ticker: new Set<string>() };
+  const stats = real(40);
+  g.answer(g.deal(stats, ctx) as Stat, 'fake');
+  clock = new Date(Date.UTC(2026, 9, 25, 23, 10));
+  for (let i = 0; i < 4; i++) g.answer(g.deal(stats, ctx) as Stat, 'fake');
+  expect(store.daily['3']).toHaveLength(5);
+  expect(g.deal(stats, ctx)).toBeDefined();
+  expect(g.view().details[0]).toBe('No. 4');
+});

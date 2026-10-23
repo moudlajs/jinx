@@ -242,7 +242,7 @@ function showEnd(): void {
   byId('end-big').textContent = end.big;
   byId('end-text').textContent = end.text;
   renderSquares(byId('end-squares'), end.squares);
-  byId('end-share').dataset.text = end.share;
+  endShare.dataset.text = end.share;
   play.end.hidden = false;
   play.answer.hidden = true;
   play.verdictRow.hidden = true;
@@ -320,7 +320,7 @@ function stopPlay(): void {
 play.a.addEventListener('click', () => answer(play.a.dataset.value ?? ''));
 play.b.addEventListener('click', () => answer(play.b.dataset.value ?? ''));
 play.next.addEventListener('click', () =>
-  void dealRound().then(() => (play.end.hidden ? play.a : byId('end-share')).focus()),
+  void dealRound().then(() => (play.end.hidden ? play.a : endShare.hidden ? byId('end-copy') : endShare).focus()),
 );
 for (const input of gameInputs) {
   input.addEventListener('change', () => {
@@ -335,17 +335,18 @@ byId('end-guess').addEventListener('click', () => {
 
 async function copyRow(): Promise<void> {
   try {
-    await navigator.clipboard.writeText(byId('end-share').dataset.text ?? '');
+    await navigator.clipboard.writeText(endShare.dataset.text ?? '');
     announce(t('play.copiedRow'));
   } catch {
     announce(t('card.copyFailed'));
   }
 }
 byId('end-copy').addEventListener('click', () => void copyRow());
-byId('end-share').addEventListener('click', () => {
-  const text = byId('end-share').dataset.text ?? '';
-  if (typeof navigator.share !== 'function') return void copyRow();
-  navigator.share({ title: t('share.title'), text }).catch((err: unknown) => {
+// Like the card's Share button: only where the browser can share, Copy otherwise.
+const endShare = byId('end-share');
+endShare.hidden = typeof navigator.share !== 'function';
+endShare.addEventListener('click', () => {
+  navigator.share({ title: t('share.title'), text: endShare.dataset.text ?? '' }).catch((err: unknown) => {
     if (!(err instanceof DOMException && err.name === 'AbortError')) void copyRow();
   });
 });
