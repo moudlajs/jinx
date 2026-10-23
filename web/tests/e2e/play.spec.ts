@@ -1,10 +1,17 @@
-import { expect, test } from '@playwright/test';
+import { readFileSync } from 'node:fs';
+import { expect, test, type Page } from '@playwright/test';
+
+// The card no longer says what it is while face down, so tests tell by its text.
+const realTexts = new Set(
+  (JSON.parse(readFileSync('tests/fixtures/stats.json', 'utf8')) as { stats: { text: string }[] }).stats.map((s) => s.text),
+);
+const truth = async (page: Page) => (realTexts.has((await page.locator('#stat-text').textContent()) ?? '') ? 'real' : 'fake');
 
 test.beforeEach(async ({ page }) => {
   await page.route('**/stats.json', (route) => route.fulfill({ path: 'tests/fixtures/stats.json' }));
 });
 
-const badge = (page: import('@playwright/test').Page) => page.locator('#card-badge');
+const badge = (page: Page) => page.locator('#card-badge');
 
 test('Fake or Real: the card is face down until you call it', async ({ page }) => {
   await page.goto('./#abc12');
@@ -16,8 +23,12 @@ test('Fake or Real: the card is face down until you call it', async ({ page }) =
   await expect(page.locator('#card-actions')).toBeHidden();
   await expect(page).not.toHaveURL(/#/);
 
-  const mode = await page.locator('#card').getAttribute('data-mode');
+  await expect(page.locator('#card')).not.toHaveAttribute('data-mode');
+  await expect(page.locator('#back-badge')).toBeEmpty();
+  await expect(page.locator('#back-title')).toBeEmpty();
+  const mode = await truth(page);
   await page.getByRole('button', { name: 'Real', exact: true }).click();
+  await expect(page.locator('#card')).toHaveAttribute('data-mode', mode);
   await expect(badge(page)).toContainText(mode === 'real' ? 'Real data' : 'Satire');
   await expect(page.locator('#verdict-title')).toHaveText(mode === 'real' ? 'Called it.' : 'Fooled you.');
   await expect(page.locator('#turn')).toBeVisible();
@@ -33,7 +44,7 @@ test('a right call grows the streak and the best is kept on reload', async ({ pa
   await page.getByRole('radio', { name: /^Play/ }).check();
   for (let i = 0; i < 3; i++) {
     await expect(badge(page)).toContainText('Fake or real?');
-    const mode = await page.locator('#card').getAttribute('data-mode');
+    const mode = await truth(page);
     await page.getByRole('button', { name: mode === 'real' ? 'Real' : 'Fake', exact: true }).click();
     await expect(page.locator('#verdict-title')).toHaveText('Called it.');
     if (i < 2) await page.getByRole('button', { name: 'Next card' }).click();

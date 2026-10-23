@@ -2,9 +2,16 @@
 import { t } from '../i18n';
 import type { CardElements } from './card';
 
-// Everything that says Fake or Real: the badge, the card number (seeds and ids look different),
-// the meta line, the punchline (Fake only) and the back.
+// Everything that says Fake or Real, in what's shown and in the DOM behind it: the badge, the card
+// number (seeds and ids look different), the meta line, the punchline (Fake only), the back, and the
+// card's data attributes. renderCard() puts it all back on reveal.
 export function maskLabel(els: CardElements, turn: HTMLElement): void {
+  delete els.card.dataset.mode;
+  delete els.card.dataset.seed;
+  for (const el of [els.backBadge, els.backTitle, els.backCode, els.backText, els.backSource, els.punchline]) el.textContent = '';
+  els.chips.replaceChildren();
+  els.dots.replaceChildren();
+  els.dots.removeAttribute('aria-label');
   for (const badge of [els.badge, els.backBadge]) {
     badge.classList.remove('badge-real');
     badge.classList.add('badge-hidden');

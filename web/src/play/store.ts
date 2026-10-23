@@ -7,9 +7,10 @@ export interface PlayStore {
 
 const EMPTY: PlayStore = { guessBest: 0 };
 
-export function loadPlay(storage: Pick<Storage, 'getItem'> | undefined = globalThis.localStorage): PlayStore {
+// Storage is resolved inside the try: just touching localStorage throws in some sandboxed pages.
+export function loadPlay(storage?: Pick<Storage, 'getItem'>): PlayStore {
   try {
-    const raw: unknown = JSON.parse(storage?.getItem(KEY) ?? 'null');
+    const raw: unknown = JSON.parse((storage ?? globalThis.localStorage).getItem(KEY) ?? 'null');
     if (!raw || typeof raw !== 'object') return { ...EMPTY };
     const r = raw as Partial<PlayStore>;
     return { guessBest: Number.isInteger(r.guessBest) && (r.guessBest as number) >= 0 ? (r.guessBest as number) : 0 };
@@ -18,9 +19,9 @@ export function loadPlay(storage: Pick<Storage, 'getItem'> | undefined = globalT
   }
 }
 
-export function savePlay(data: PlayStore, storage: Pick<Storage, 'setItem'> | undefined = globalThis.localStorage): void {
+export function savePlay(data: PlayStore, storage?: Pick<Storage, 'setItem'>): void {
   try {
-    storage?.setItem(KEY, JSON.stringify(data));
+    (storage ?? globalThis.localStorage).setItem(KEY, JSON.stringify(data));
   } catch {
     // Private mode or full: the score just isn't kept.
   }
