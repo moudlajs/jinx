@@ -80,3 +80,25 @@ test('an open tab moves on at midnight, but finishes a half-played five first', 
   expect(g.deal(stats, ctx)).toBeDefined();
   expect(g.view().details[0]).toBe('No. 4');
 });
+
+test('a stale tab shows the new day before anything is dealt', () => {
+  const store = { guessBest: 0, daily: { '3': [true, true, true, true, true] } as Record<string, boolean[]> };
+  let clock = new Date(Date.UTC(2026, 9, 25, 12));
+  const g = createDaily(store, () => {}, 'u', () => clock);
+  expect(g.progress?.()).toEqual([true, true, true, true, true]);
+  clock = new Date(Date.UTC(2026, 9, 26, 8));
+  expect(g.progress?.()).toEqual([undefined, undefined, undefined, undefined, undefined]);
+  expect(g.view().details[0]).toBe('No. 4');
+});
+
+test('a card dealt before midnight counts for the day it was dealt', () => {
+  const store = { guessBest: 0, daily: {} as Record<string, boolean[]> };
+  // 23:59 and 00:01 in Prague, which is UTC+1 after the clocks go back on 25 October.
+  let clock = new Date(Date.UTC(2026, 9, 25, 22, 59));
+  const g = createDaily(store, () => {}, 'u', () => clock);
+  const card = g.deal(real(40), { previous: undefined, ticker: new Set() }) as Stat;
+  clock = new Date(Date.UTC(2026, 9, 25, 23, 1));
+  expect(g.view().details[0]).toBe('No. 3');
+  g.answer(card, card.mode);
+  expect(store.daily).toEqual({ '3': [true] });
+});

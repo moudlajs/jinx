@@ -40,7 +40,20 @@ export function createDaily(store: PlayStore, save: () => void, url: string, now
   let day = dayNumber(now());
   let key = String(day);
   let five: Stat[] | undefined;
-  const results = () => store.daily[key] ?? [];
+  // A card dealt before midnight is answered for the day it was dealt.
+  let out = false;
+  // A tab left open past midnight moves on to the new five, unless one is half played.
+  // Every read goes through here, so the menu and the score never show yesterday.
+  const results = () => {
+    const today = dayNumber(now());
+    const done = (store.daily[key] ?? []).length;
+    if (today !== day && !out && (done === 0 || done >= FIVE)) {
+      day = today;
+      key = String(day);
+      five = undefined;
+    }
+    return store.daily[key] ?? [];
+  };
   const right = () => results().filter(Boolean).length;
   return {
     id: 'daily',
@@ -50,19 +63,15 @@ export function createDaily(store: PlayStore, save: () => void, url: string, now
     ],
     // The ticker isn't consulted: the five must be the same for everyone. The ticker avoids them instead.
     deal(stats) {
-      // A tab left open past midnight moves on to the new five, unless one is half played.
-      const today = dayNumber(now());
-      if (today !== day && (results().length === 0 || results().length >= FIVE)) {
-        day = today;
-        key = String(day);
-        five = undefined;
-      }
+      const index = results().length;
       five ??= dailyFive(day, stats);
-      return five[results().length];
+      out = index < FIVE;
+      return five[index];
     },
     answer(stat, choice) {
       const ok = choice === stat.mode;
       store.daily[key] = [...results(), ok].slice(0, FIVE);
+      out = false;
       save();
       return { ok, title: t(ok ? 'play.right' : 'play.wrong'), sub: t(stat.mode === 'fake' ? 'play.wasFake' : 'play.wasReal') };
     },
