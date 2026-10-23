@@ -66,6 +66,7 @@
             <label><input type="radio" name="game" value="daily" /><span data-i18n="play.daily.name"></span></label>
             <label><input type="radio" name="game" value="guess" /><span data-i18n="play.guess.name"></span></label>
             <label><input type="radio" name="game" value="overunder" /><span data-i18n="play.ou.name"></span></label>
+            <button type="button" class="games-back" id="games-back" data-i18n="play.menu.back"></button>
           </fieldset>
           <div class="progress" id="progress" aria-hidden="true"></div>
         </div>
@@ -79,6 +80,36 @@
               <p class="cover-line" data-i18n="hero.cover"></p>
               <button type="button" class="btn btn-primary" id="generate" data-i18n="hero.generate"></button>
               <p class="hint" data-i18n="hero.hint"></p>
+            </div>
+          </section>
+
+          <section class="play-menu" id="play-menu" aria-labelledby="menu-title" hidden>
+            <div class="cover-face menu-face">
+              <h2 class="menu-title" id="menu-title" data-i18n="play.menu.title"></h2>
+              <ul class="menu-list">
+                <li>
+                  <button type="button" class="menu-game" data-game="daily">
+                    <span class="menu-name" data-i18n="play.daily.name"></span>
+                    <span class="menu-desc" data-i18n="play.menu.dailyDesc"></span>
+                    <span class="menu-status" id="menu-status-daily"></span>
+                  </button>
+                </li>
+                <li>
+                  <button type="button" class="menu-game" data-game="guess">
+                    <span class="menu-name" data-i18n="play.guess.name"></span>
+                    <span class="menu-desc" data-i18n="play.menu.guessDesc"></span>
+                    <span class="menu-status" id="menu-status-guess"></span>
+                  </button>
+                </li>
+                <li>
+                  <button type="button" class="menu-game" data-game="overunder">
+                    <span class="menu-name" data-i18n="play.ou.name"></span>
+                    <span class="menu-desc" data-i18n="play.menu.ouDesc"></span>
+                    <span class="menu-status" id="menu-status-overunder"></span>
+                  </button>
+                </li>
+              </ul>
+              <p class="end-note" data-i18n="play.menu.note"></p>
             </div>
           </section>
 

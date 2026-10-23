@@ -1,6 +1,6 @@
 import { expect, test } from 'vitest';
 import { generate } from './fake/generate';
-import { hashFor, parseHash } from './hash';
+import { hashFor, parseHash, parsePlayHash } from './hash';
 
 test('parseHash accepts a Fake seed or a Real id, nothing else', () => {
   expect(parseHash('#abc12')).toEqual({ mode: 'fake', seed: 'abc12' });
@@ -14,4 +14,12 @@ test('parseHash accepts a Fake seed or a Real id, nothing else', () => {
 test('hashFor round-trips', () => {
   const fake = generate('abc12');
   expect(parseHash(`#${hashFor(fake)}`)).toEqual({ mode: 'fake', seed: 'abc12' });
+});
+
+test('game links name a game and are never read as a seed', () => {
+  expect(parsePlayHash('#play-daily')).toBe('daily');
+  expect(parsePlayHash('#play-overunder')).toBe('overunder');
+  expect(parsePlayHash('#play-poker')).toBeNull();
+  expect(parsePlayHash('#play')).toBeNull();
+  expect(parseHash('#play-daily')).toBeNull();
 });

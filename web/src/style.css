@@ -286,6 +286,11 @@ h2 {
   .theme-toggle {
     padding: 0 0.7rem;
   }
+
+  /* Comes before the .games rules, so it needs the extra weight. */
+  .games label span {
+    padding: 0 0.7rem;
+  }
 }
 
 /* Buttons */
@@ -823,6 +828,7 @@ h2 {
 
 .games {
   display: flex;
+  flex-wrap: wrap;
   gap: 6px;
   margin: 0;
   padding: 0;
@@ -885,7 +891,22 @@ h2 {
   background: var(--dot-off);
 }
 
-/* Daily Five, done: the score card takes the deck's place. */
+.games-back {
+  min-height: 40px;
+  margin-left: auto;
+  padding: 0 0.5rem;
+  border: 0;
+  background: none;
+  color: var(--muted);
+  font: inherit;
+  font-size: 0.875rem;
+  text-decoration: underline;
+  text-underline-offset: 0.2em;
+  cursor: pointer;
+}
+
+/* The Play menu and the Daily Five end card take the deck's place. */
+.play-menu,
 .daily-end {
   grid-area: 1 / 1;
   position: relative;
@@ -894,6 +915,71 @@ h2 {
   border-radius: 24px;
   padding: 8px;
   background: var(--accent);
+}
+
+.menu-face {
+  justify-content: flex-start;
+  background-image: none;
+}
+
+.menu-title {
+  font-weight: 900;
+  font-stretch: 75%;
+  font-size: clamp(2rem, 6vw, 2.8rem);
+  line-height: 1;
+  text-transform: uppercase;
+}
+
+.menu-list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  width: 100%;
+  margin: 4px 0 auto;
+  padding: 0;
+  list-style: none;
+}
+
+.menu-game {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 2px;
+  width: 100%;
+  padding: 14px 18px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  background: var(--surface);
+  color: var(--text);
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+  transition: border-color 140ms ease;
+}
+
+.menu-game:hover {
+  border-color: var(--accent);
+}
+
+.menu-name {
+  font-weight: 900;
+  font-stretch: 85%;
+  font-size: 1.35rem;
+}
+
+.menu-desc {
+  color: var(--muted);
+  font-size: 0.9rem;
+  line-height: 1.35;
+}
+
+.menu-status {
+  margin-top: 4px;
+  color: var(--num);
+  font-size: 0.8rem;
+  font-weight: 800;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
 }
 
 .end-face {

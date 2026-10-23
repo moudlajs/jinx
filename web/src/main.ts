@@ -2,7 +2,7 @@ import '@fontsource-variable/archivo/wdth.css';
 import './style.css';
 import { generate, nextStat } from './fake/generate';
 import { randomSeed } from './fake/seed';
-import { parseHash, setHash } from './hash';
+import { parseHash, parsePlayHash, setHash } from './hash';
 import { applyI18n, t } from './i18n';
 import { createDaily, dailyFive, dayNumber } from './play/daily';
 import type { Game, GameId } from './play/game';
@@ -177,6 +177,7 @@ const play = {
   score: byId('score'),
   visit: byId('visit-title').closest('section') as HTMLElement,
   end: byId('daily-end'),
+  menu: byId('play-menu'),
 };
 const scoreEls = {
   line: byId('scoreline'),
@@ -192,7 +193,7 @@ const turn = byId('turn');
 const store = loadPlay();
 const save = () => savePlay(store);
 const games: Record<GameId, Game> = {
-  daily: createDaily(store, save, `${location.origin}${location.pathname}`),
+  daily: createDaily(store, save, `${location.origin}${location.pathname}#play-daily`),
   guess: createGuess(store, save),
   overunder: createOverUnder(store, save),
 };
@@ -295,20 +296,49 @@ function answer(choice: string): void {
   renderPlayScore();
 }
 
-function startPlay(): void {
+function startPlay(id?: GameId): void {
   playing = true;
+  for (const input of modeInputs) input.checked = input.value === 'play';
   actions.hidden = true;
-  play.top.hidden = false;
   play.actions.hidden = false;
-  play.answer.hidden = true;
-  play.verdictRow.hidden = true;
   play.visit.hidden = true;
   play.score.hidden = false;
-  // Today's Daily Five first, until it's done.
-  setGame((games.daily.progress?.() ?? []).includes(undefined) ? 'daily' : 'guess');
-  // The old card's hash would reopen it on reload; a face-down card has none.
+  if (id) void selectGame(id);
+  else showMenu();
+}
+
+function selectGame(id: GameId): Promise<void> {
+  setGame(id);
+  play.menu.hidden = true;
+  play.top.hidden = false;
+  // A game's link is fine to keep: it names the game, not a face-down card.
+  history.replaceState(null, '', `${location.pathname}${location.search}#play-${id}`);
+  return dealRound();
+}
+
+// The menu: the three games with where you stand in each.
+function showMenu(): void {
+  ++ticket;
+  clearStatus();
+  round = undefined;
+  els.card.hidden = true;
+  hero.hidden = true;
+  cardLine.hidden = true;
+  play.end.hidden = true;
+  play.top.hidden = true;
+  play.answer.hidden = true;
+  play.verdictRow.hidden = true;
+  for (const id of Object.keys(games) as GameId[]) byId(`menu-status-${id}`).textContent = games[id].status();
+  renderScore(scoreEls, {
+    line: '',
+    title: t('play.menu.scoresTitle'),
+    big: String(Object.keys(store.daily).length),
+    bigLabel: t('play.menu.daysLabel'),
+    details: [games.guess.status(), games.overunder.status()],
+    dots: [],
+  });
+  play.menu.hidden = false;
   history.replaceState(null, '', location.pathname + location.search);
-  void dealRound();
 }
 
 function stopPlay(): void {
@@ -322,6 +352,7 @@ function stopPlay(): void {
   play.top.hidden = true;
   play.actions.hidden = true;
   play.end.hidden = true;
+  play.menu.hidden = true;
   play.visit.hidden = false;
   play.score.hidden = true;
   if (els.card.hidden) hero.hidden = false;
@@ -333,14 +364,22 @@ play.next.addEventListener('click', () =>
   void dealRound().then(() => (play.end.hidden ? play.a : endShare.hidden ? byId('end-copy') : endShare).focus()),
 );
 for (const input of gameInputs) {
-  input.addEventListener('change', () => {
-    setGame(input.value in games ? (input.value as GameId) : 'guess');
-    void dealRound();
+  input.addEventListener('change', () => void selectGame(input.value in games ? (input.value as GameId) : 'guess'));
+}
+for (const button of document.querySelectorAll<HTMLButtonElement>('.menu-game')) {
+  button.addEventListener('click', () => {
+    const id = button.dataset.game ?? '';
+    void selectGame(id in games ? (id as GameId) : 'guess').then(() => {
+      if (playing) (play.end.hidden ? play.a : byId('end-share')).focus();
+    });
   });
 }
+byId('games-back').addEventListener('click', () => {
+  showMenu();
+  document.querySelector<HTMLButtonElement>('.menu-game')?.focus();
+});
 byId('end-guess').addEventListener('click', () => {
-  setGame('guess');
-  void dealRound().then(() => play.a.focus());
+  void selectGame('guess').then(() => play.a.focus());
 });
 
 async function copyRow(): Promise<void> {
@@ -404,6 +443,12 @@ document.addEventListener('keydown', (e) => {
 });
 
 function fromHash(): void {
+  const gameId = parsePlayHash(location.hash);
+  if (gameId) {
+    if (playing) void selectGame(gameId);
+    else startPlay(gameId);
+    return;
+  }
   const target = parseHash(location.hash);
   if (!target) return;
   // A link (the ticker, say) leaves the game for that card.

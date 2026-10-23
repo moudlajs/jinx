@@ -19,8 +19,16 @@ technically true and completely useless.
 - **Real mode** shows stats from real queries over public NFL data
   (1999 to today), regenerated every week. Each card can show its
   filters, sample size and the exact SQL. See [docs/engine.md](docs/engine.md).
+- **Play** has three games on the same cards:
+  - **Daily Five:** five face-down cards, the same five for everyone
+    today. Call each one Fake or Real, then share your row.
+  - **Fake or Real:** the same call, endless, with a streak.
+  - **Over / Under:** a real stat with its number hidden and a line to
+    beat. No money, no odds.
 
-No accounts, no cookies, no trackers.
+  A card's label stays hidden only until you answer.
+
+No accounts, no cookies, no trackers. Play scores stay in your browser.
 
 ## Local development
 

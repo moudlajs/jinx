@@ -61,6 +61,7 @@ test('the record is kept and the verdict says where it came in', () => {
   g.answer(fg, right === 'over' ? 'under' : 'over');
   expect(store.ou).toEqual({ w: 2, l: 2 });
   expect(g.view()).toMatchObject({ big: '2–2', dots: [true, false] });
+  expect(g.status()).toBe('Record: 2–2');
 });
 
 test('deals only real stats a line can be set on', () => {
