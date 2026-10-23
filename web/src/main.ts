@@ -4,12 +4,16 @@ import { generate, nextStat } from './fake/generate';
 import { randomSeed } from './fake/seed';
 import { parseHash, setHash } from './hash';
 import { applyI18n, t } from './i18n';
+import { newGuessScore, scoreGuess } from './play/guess';
+import { loadPlay, savePlay } from './play/store';
 import { attribution, randomQuote } from './quotes';
 import { loadStats, pickReal } from './real';
 import { copyText, shareBody, statUrl } from './share';
 import type { Mode, Stat } from './stat';
 import { initThemeToggle } from './theme';
 import { renderCard } from './ui/card';
+import { maskLabel, unmask } from './ui/mask';
+import { guessView, renderScore } from './ui/score';
 import { interleave, renderTicker } from './ui/ticker';
 import { renderVisit } from './ui/visit';
 import { newVisit, see } from './visit';
@@ -154,12 +158,137 @@ async function showNext(m: Mode, wantedId?: string): Promise<void> {
   }
 }
 
-const another = () => void showNext(mode);
+// Play: Fake or Real. A face-down card, two answers, then the reveal.
+const play = {
+  actions: byId('game-actions'),
+  answer: byId('answer'),
+  a: byId<HTMLButtonElement>('answer-a'),
+  b: byId<HTMLButtonElement>('answer-b'),
+  verdictRow: byId('verdict-row'),
+  verdict: byId('verdict'),
+  verdictTitle: byId('verdict-title'),
+  verdictSub: byId('verdict-sub'),
+  next: byId<HTMLButtonElement>('next-round'),
+  score: byId('score'),
+  visit: byId('visit-title').closest('section') as HTMLElement,
+};
+const scoreEls = {
+  line: byId('scoreline'),
+  title: byId('score-title'),
+  big: byId('score-big'),
+  bigLabel: byId('score-big-label'),
+  details: byId('score-details'),
+  dots: byId('score-dots'),
+};
+const turn = byId('turn');
+let playing = false;
+let round: Stat | undefined;
+let answered = false;
+let store = loadPlay();
+let guess = newGuessScore(store.guessBest);
+// Real stats already on the ticker would give a round away.
+let tickerIds = new Set<string>();
+
+function showRound(stat: Stat): void {
+  clearStatus();
+  toss();
+  round = stat;
+  answered = false;
+  setTurned(false);
+  renderCard(els, stat);
+  maskLabel(els, turn);
+  hero.hidden = true;
+  play.answer.hidden = false;
+  play.verdictRow.hidden = true;
+}
+
+async function dealRound(): Promise<void> {
+  const mine = ++ticket;
+  announce(t('real.loading'));
+  try {
+    const { stats } = await loadStats(STATS_URL);
+    if (mine !== ticket || !playing) return;
+    const pool = stats.filter((s) => !tickerIds.has(s.id));
+    showRound(Math.random() < 0.5 ? pickReal(pool.length ? pool : stats, round) : generate(randomSeed()));
+  } catch {
+    if (mine !== ticket || !playing) return;
+    stopPlay();
+    setMode('fake');
+    show(nextStat(current));
+    announce(t('play.loadFailed'));
+  }
+}
+
+function answer(choice: Mode): void {
+  if (!round || answered) return;
+  answered = true;
+  const ok = choice === round.mode;
+  guess = scoreGuess(guess, ok);
+  if (guess.best > store.guessBest) {
+    store = { ...store, guessBest: guess.best };
+    savePlay(store);
+  }
+  unmask(els, turn);
+  renderCard(els, round);
+  play.verdictTitle.textContent = t(ok ? 'play.right' : 'play.wrong');
+  play.verdictSub.textContent = t(round.mode === 'fake' ? 'play.wasFake' : 'play.wasReal');
+  play.verdict.classList.toggle('right', ok);
+  play.answer.hidden = true;
+  play.verdictRow.hidden = false;
+  play.next.focus();
+  renderScore(scoreEls, guessView(guess));
+}
+
+function startPlay(): void {
+  playing = true;
+  actions.hidden = true;
+  play.actions.hidden = false;
+  play.visit.hidden = true;
+  play.score.hidden = false;
+  play.a.textContent = t('play.fake');
+  play.b.textContent = t('play.real');
+  play.a.dataset.tone = 'fake';
+  play.b.dataset.tone = 'real';
+  play.next.textContent = t('play.next');
+  renderScore(scoreEls, guessView(guess));
+  // The old card's hash would reopen it on reload; a face-down card has none.
+  history.replaceState(null, '', location.pathname + location.search);
+  void dealRound();
+}
+
+function stopPlay(): void {
+  playing = false;
+  round = undefined;
+  ++ticket;
+  play.actions.hidden = true;
+  play.visit.hidden = false;
+  play.score.hidden = true;
+  unmask(els, turn);
+  if (els.card.hidden) hero.hidden = false;
+}
+
+play.a.addEventListener('click', () => answer('fake'));
+play.b.addEventListener('click', () => answer('real'));
+play.next.addEventListener('click', () => void dealRound().then(() => play.a.focus()));
+
+const another = () => {
+  if (playing) {
+    if (answered) void dealRound();
+    return;
+  }
+  void showNext(mode);
+};
 
 for (const input of modeInputs) {
   input.addEventListener('change', () => {
+    if (input.value === 'play') {
+      startPlay();
+      return;
+    }
+    const wasPlaying = playing;
+    if (playing) stopPlay();
     setMode(input.value === 'real' ? 'real' : 'fake');
-    if (current) another();
+    if (current || wasPlaying) another();
   });
 }
 
@@ -188,11 +317,14 @@ document.addEventListener('keydown', (e) => {
 function fromHash(): void {
   const target = parseHash(location.hash);
   if (!target) return;
-  if (target.mode === 'fake' && target.seed !== current?.seed) {
+  // A link (the ticker, say) leaves the game for that card.
+  const left = playing;
+  if (playing) stopPlay();
+  if (target.mode === 'fake' && (left || target.seed !== current?.seed)) {
     ++ticket;
     setMode('fake');
     show(generate(target.seed));
-  } else if (target.mode === 'real' && target.id !== current?.id) {
+  } else if (target.mode === 'real' && (left || target.id !== current?.id)) {
     setMode('real');
     void showNext('real', target.id);
   }
@@ -236,6 +368,7 @@ async function fillTicker(): Promise<void> {
       const pick = pickReal(stats);
       if (!real.includes(pick)) real.push(pick);
     }
+    tickerIds = new Set(real.map((s) => s.id));
     renderTicker(track, interleave(fake, real));
   } catch {
     // Fake-only ticker is fine.

@@ -44,7 +44,8 @@ too: a squash merge copies branch-commit trailers into `main`.
 ## Content rules
 
 - Fake stats are satire and must always say so, on the card and in any
-  copied text.
+  copied text. In Play a card's label stays hidden only until the player
+  answers, and a face-down card is never copied, shared or linked.
 - Word banks use teams, positions and archetypes ("a backup kicker"),
   never named players.
 - Quotes on the landing page are short, well known and attributed.

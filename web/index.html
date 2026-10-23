@@ -44,6 +44,10 @@
             <input type="radio" name="mode" value="real" />
             <span class="mode-option"><span class="mode-name" data-i18n="mode.real"></span><span class="mode-desc" data-i18n="mode.realDesc"></span></span>
           </label>
+          <label>
+            <input type="radio" name="mode" value="play" />
+            <span class="mode-option"><span class="mode-name" data-i18n="mode.play"></span><span class="mode-desc" data-i18n="mode.playDesc"></span></span>
+          </label>
         </fieldset>
         <footer class="site-footer">
           <p class="footer-long" data-i18n="footer.disclaimer"></p>
@@ -123,6 +127,18 @@
             <span class="btn-label" data-i18n="card.share"></span>
           </button>
         </div>
+        <div class="game-actions" id="game-actions" hidden>
+          <div class="answer" id="answer" role="group" aria-labelledby="answer-label">
+            <span class="visually-hidden" id="answer-label" data-i18n="play.answerLabel"></span>
+            <button type="button" class="btn btn-answer" id="answer-a"></button>
+            <button type="button" class="btn btn-answer" id="answer-b"></button>
+          </div>
+          <div class="verdict-row" id="verdict-row" hidden>
+            <p class="verdict" id="verdict" aria-live="polite"><strong id="verdict-title"></strong><span id="verdict-sub"></span></p>
+            <button type="button" class="btn btn-primary btn-next" id="next-round"></button>
+          </div>
+          <p class="scoreline" id="scoreline"></p>
+        </div>
         <p class="status" id="status" role="status"></p>
       </main>
 
@@ -143,6 +159,13 @@
           <p class="visit-empty" id="visit-empty" data-i18n="visit.empty"></p>
           <ul class="visit-last" id="visit-last"></ul>
           <p class="visit-note" data-i18n="visit.note"></p>
+        </section>
+        <section class="score" id="score" aria-labelledby="score-title" hidden>
+          <h2 class="rail-title" id="score-title"></h2>
+          <p class="visit-dealt"><span class="visit-count" id="score-big"></span> <span id="score-big-label"></span></p>
+          <p class="score-details" id="score-details"></p>
+          <div class="score-dots" id="score-dots" aria-hidden="true"></div>
+          <p class="visit-note" data-i18n="play.note"></p>
         </section>
       </div>
 
