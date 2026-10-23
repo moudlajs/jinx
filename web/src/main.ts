@@ -243,6 +243,8 @@ function startPlay(): void {
   playing = true;
   actions.hidden = true;
   play.actions.hidden = false;
+  play.answer.hidden = true;
+  play.verdictRow.hidden = true;
   play.visit.hidden = true;
   play.score.hidden = false;
   play.a.textContent = t('play.fake');
@@ -257,13 +259,15 @@ function startPlay(): void {
 }
 
 function stopPlay(): void {
+  // Leave the card fully labelled, whatever the caller deals next (or fails to).
+  unmask(els, turn);
+  if (round) renderCard(els, round);
   playing = false;
   round = undefined;
   ++ticket;
   play.actions.hidden = true;
   play.visit.hidden = false;
   play.score.hidden = true;
-  unmask(els, turn);
   if (els.card.hidden) hero.hidden = false;
 }
 

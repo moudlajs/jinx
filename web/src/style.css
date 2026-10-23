@@ -823,11 +823,6 @@ h2 {
   background: color-mix(in srgb, var(--real-bg) 10%, transparent);
 }
 
-.btn-answer[data-tone='line'] {
-  border-color: var(--accent);
-  background: color-mix(in srgb, var(--accent) 8%, transparent);
-}
-
 .verdict-row {
   display: grid;
   grid-template-columns: minmax(0, 1fr) auto;
