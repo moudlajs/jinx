@@ -36,6 +36,15 @@ const states: [string, (page: Page) => Promise<void>][] = [
     await page.getByRole('button', { name: 'Fake', exact: true }).click();
     await expect(page.getByRole('button', { name: 'Next card' })).toBeFocused();
   }],
+  ['daily five, done', async (page) => {
+    await page.goto('./');
+    await page.getByRole('radio', { name: /^Play/ }).check();
+    for (let i = 0; i < 5; i++) {
+      await page.getByRole('button', { name: 'Real', exact: true }).click();
+      await page.getByRole('button', { name: i === 4 ? 'See my row' : 'Next card' }).click();
+    }
+    await expect(page.locator('#daily-end')).toBeVisible();
+  }],
 ];
 
 for (const scheme of ['light', 'dark'] as const) {

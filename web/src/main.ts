@@ -4,7 +4,9 @@ import { generate, nextStat } from './fake/generate';
 import { randomSeed } from './fake/seed';
 import { parseHash, setHash } from './hash';
 import { applyI18n, t } from './i18n';
-import { newGuessScore, scoreGuess } from './play/guess';
+import { createDaily, dailyFive, dayNumber } from './play/daily';
+import type { Game } from './play/game';
+import { createGuess } from './play/guess';
 import { loadPlay, savePlay } from './play/store';
 import { attribution, randomQuote } from './quotes';
 import { loadStats, pickReal } from './real';
@@ -13,7 +15,7 @@ import type { Mode, Stat } from './stat';
 import { initThemeToggle } from './theme';
 import { renderCard } from './ui/card';
 import { maskLabel, unmask } from './ui/mask';
-import { guessView, renderScore } from './ui/score';
+import { renderProgress, renderScore, renderSquares } from './ui/score';
 import { interleave, renderTicker } from './ui/ticker';
 import { renderVisit } from './ui/visit';
 import { newVisit, see } from './visit';
@@ -158,8 +160,10 @@ async function showNext(m: Mode, wantedId?: string): Promise<void> {
   }
 }
 
-// Play: Fake or Real. A face-down card, two answers, then the reveal.
+// Play: one loop for every game. Deal a face-down card, take the answer, reveal, keep score.
 const play = {
+  top: byId('play-top'),
+  progress: byId('progress'),
   actions: byId('game-actions'),
   answer: byId('answer'),
   a: byId<HTMLButtonElement>('answer-a'),
@@ -171,6 +175,7 @@ const play = {
   next: byId<HTMLButtonElement>('next-round'),
   score: byId('score'),
   visit: byId('visit-title').closest('section') as HTMLElement,
+  end: byId('daily-end'),
 };
 const scoreEls = {
   line: byId('scoreline'),
@@ -180,14 +185,37 @@ const scoreEls = {
   details: byId('score-details'),
   dots: byId('score-dots'),
 };
+const gameInputs = [...document.querySelectorAll<HTMLInputElement>('input[name="game"]')];
+const endShare = byId('end-share');
 const turn = byId('turn');
+const store = loadPlay();
+const save = () => savePlay(store);
+const games: Record<'daily' | 'guess', Game> = {
+  daily: createDaily(store, save, `${location.origin}${location.pathname}`),
+  guess: createGuess(store, save),
+};
+let game: Game = games.guess;
 let playing = false;
 let round: Stat | undefined;
 let answered = false;
-let store = loadPlay();
-let guess = newGuessScore(store.guessBest);
-// Real stats already on the ticker would give a round away.
 let tickerIds = new Set<string>();
+
+function renderPlayScore(): void {
+  renderScore(scoreEls, game.view());
+  renderProgress(play.progress, game.progress?.());
+}
+
+function setGame(id: keyof typeof games): void {
+  game = games[id];
+  for (const input of gameInputs) input.checked = input.value === id;
+  const [a, b] = game.choices;
+  for (const [button, choice] of [[play.a, a], [play.b, b]] as const) {
+    button.textContent = choice.label;
+    button.dataset.tone = choice.tone;
+    button.dataset.value = choice.value;
+  }
+  renderPlayScore();
+}
 
 function showRound(stat: Stat): void {
   clearStatus();
@@ -198,8 +226,28 @@ function showRound(stat: Stat): void {
   renderCard(els, stat);
   maskLabel(els, turn);
   hero.hidden = true;
+  play.end.hidden = true;
   play.answer.hidden = false;
   play.verdictRow.hidden = true;
+}
+
+function showEnd(): void {
+  const end = game.end?.();
+  if (!end) return;
+  clearStatus();
+  toss();
+  round = undefined;
+  els.card.hidden = true;
+  hero.hidden = true;
+  byId('end-kicker').textContent = end.kicker;
+  byId('end-big').textContent = end.big;
+  byId('end-text').textContent = end.text;
+  renderSquares(byId('end-squares'), end.squares);
+  endShare.dataset.text = end.share;
+  play.end.hidden = false;
+  play.answer.hidden = true;
+  play.verdictRow.hidden = true;
+  renderPlayScore();
 }
 
 async function dealRound(): Promise<void> {
@@ -210,8 +258,9 @@ async function dealRound(): Promise<void> {
     const { stats } = await loadStats(STATS_URL);
     clearTimeout(slow);
     if (mine !== ticket || !playing) return;
-    const pool = stats.filter((s) => !tickerIds.has(s.id));
-    showRound(Math.random() < 0.5 ? pickReal(pool.length ? pool : stats, round) : generate(randomSeed()));
+    const stat = game.deal(stats, { previous: round, ticker: tickerIds });
+    if (stat) showRound(stat);
+    else showEnd();
   } catch {
     clearTimeout(slow);
     if (mine !== ticket || !playing) return;
@@ -222,40 +271,33 @@ async function dealRound(): Promise<void> {
   }
 }
 
-function answer(choice: Mode): void {
+function answer(choice: string): void {
   if (!round || answered) return;
   answered = true;
-  const ok = choice === round.mode;
-  guess = scoreGuess(guess, ok);
-  if (guess.best > store.guessBest) {
-    store = { ...store, guessBest: guess.best };
-    savePlay(store);
-  }
+  const verdict = game.answer(round, choice);
   unmask(els, turn);
   renderCard(els, round);
-  play.verdictTitle.textContent = t(ok ? 'play.right' : 'play.wrong');
-  play.verdictSub.textContent = t(round.mode === 'fake' ? 'play.wasFake' : 'play.wasReal');
-  play.verdict.classList.toggle('right', ok);
+  play.verdictTitle.textContent = verdict.title;
+  play.verdictSub.textContent = verdict.sub;
+  play.verdict.classList.toggle('right', verdict.ok);
+  play.next.textContent = game.nextLabel();
   play.answer.hidden = true;
   play.verdictRow.hidden = false;
   play.next.focus();
-  renderScore(scoreEls, guessView(guess));
+  renderPlayScore();
 }
 
 function startPlay(): void {
   playing = true;
   actions.hidden = true;
+  play.top.hidden = false;
   play.actions.hidden = false;
   play.answer.hidden = true;
   play.verdictRow.hidden = true;
   play.visit.hidden = true;
   play.score.hidden = false;
-  play.a.textContent = t('play.fake');
-  play.b.textContent = t('play.real');
-  play.a.dataset.tone = 'fake';
-  play.b.dataset.tone = 'real';
-  play.next.textContent = t('play.next');
-  renderScore(scoreEls, guessView(guess));
+  // Today's Daily Five first, until it's done.
+  setGame((games.daily.progress?.() ?? []).includes(undefined) ? 'daily' : 'guess');
   // The old card's hash would reopen it on reload; a face-down card has none.
   history.replaceState(null, '', location.pathname + location.search);
   void dealRound();
@@ -268,15 +310,46 @@ function stopPlay(): void {
   playing = false;
   round = undefined;
   ++ticket;
+  play.top.hidden = true;
   play.actions.hidden = true;
+  play.end.hidden = true;
   play.visit.hidden = false;
   play.score.hidden = true;
   if (els.card.hidden) hero.hidden = false;
 }
 
-play.a.addEventListener('click', () => answer('fake'));
-play.b.addEventListener('click', () => answer('real'));
-play.next.addEventListener('click', () => void dealRound().then(() => play.a.focus()));
+play.a.addEventListener('click', () => answer(play.a.dataset.value ?? ''));
+play.b.addEventListener('click', () => answer(play.b.dataset.value ?? ''));
+play.next.addEventListener('click', () =>
+  void dealRound().then(() => (play.end.hidden ? play.a : endShare.hidden ? byId('end-copy') : endShare).focus()),
+);
+for (const input of gameInputs) {
+  input.addEventListener('change', () => {
+    setGame(input.value === 'daily' ? 'daily' : 'guess');
+    void dealRound();
+  });
+}
+byId('end-guess').addEventListener('click', () => {
+  setGame('guess');
+  void dealRound().then(() => play.a.focus());
+});
+
+async function copyRow(): Promise<void> {
+  try {
+    await navigator.clipboard.writeText(endShare.dataset.text ?? '');
+    announce(t('play.copiedRow'));
+  } catch {
+    announce(t('card.copyFailed'));
+  }
+}
+byId('end-copy').addEventListener('click', () => void copyRow());
+// Like the card's Share button: only where the browser can share, Copy otherwise.
+endShare.hidden = typeof navigator.share !== 'function';
+endShare.addEventListener('click', () => {
+  navigator.share({ title: t('share.title'), text: endShare.dataset.text ?? '' }).catch((err: unknown) => {
+    if (!(err instanceof DOMException && err.name === 'AbortError')) void copyRow();
+  });
+});
 
 const another = () => {
   if (playing) {
@@ -370,9 +443,12 @@ async function fillTicker(): Promise<void> {
   renderTicker(track, fake);
   try {
     const { stats } = await loadStats(STATS_URL);
+    // Today's Daily Five stays off the ticker, or it would give those cards away.
+    const daily = new Set(dailyFive(dayNumber(new Date()), stats).map((s) => s.id));
+    const pool = stats.filter((s) => !daily.has(s.id));
     const real: Stat[] = [];
-    while (real.length < Math.min(TICKER_SIZE, stats.length)) {
-      const pick = pickReal(stats);
+    while (real.length < Math.min(TICKER_SIZE, pool.length)) {
+      const pick = pickReal(pool);
       if (!real.includes(pick)) real.push(pick);
     }
     tickerIds = new Set(real.map((s) => s.id));

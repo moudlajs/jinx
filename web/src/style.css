@@ -167,8 +167,26 @@ h2 {
 .stage {
   grid-area: stage;
   display: grid;
-  grid-template-rows: 1fr auto auto;
+  grid-template-rows: auto 1fr auto auto;
   padding: 18px var(--gutter) 0;
+}
+
+/* Fixed rows, so a hidden switcher or button row never moves the deck. */
+.play-top {
+  grid-row: 1;
+}
+
+.deck {
+  grid-row: 2;
+}
+
+.actions,
+.game-actions {
+  grid-row: 3;
+}
+
+.status {
+  grid-row: 4;
 }
 
 /* Deal, Copy and Share sit right under the card at every width. */
@@ -793,6 +811,162 @@ h2 {
   white-space: nowrap;
 }
 
+/* Play: which game, and the Daily Five progress, above the card. */
+.play-top {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  width: 100%;
+  max-width: 520px;
+  margin: 0 auto 16px;
+}
+
+.games {
+  display: flex;
+  gap: 6px;
+  margin: 0;
+  padding: 0;
+  border: 0;
+}
+
+.games label {
+  position: relative;
+  cursor: pointer;
+}
+
+.games input {
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  margin: 0;
+  cursor: pointer;
+}
+
+.games span {
+  display: inline-flex;
+  align-items: center;
+  min-height: 40px;
+  padding: 0 0.9rem;
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  color: var(--muted);
+  font-size: 0.875rem;
+  font-weight: 700;
+}
+
+.games input:checked + span {
+  border-color: var(--accent);
+  background: color-mix(in srgb, var(--accent) 10%, transparent);
+  color: var(--text);
+}
+
+.games input:focus-visible + span {
+  outline: 3px solid var(--focus);
+  outline-offset: 2px;
+}
+
+.progress {
+  display: grid;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  gap: 6px;
+}
+
+.step {
+  height: 8px;
+  border-radius: 999px;
+  background: var(--chip);
+}
+
+.step.on {
+  background: var(--accent);
+}
+
+.step.off {
+  background: var(--dot-off);
+}
+
+/* Daily Five, done: the score card takes the deck's place. */
+.daily-end {
+  grid-area: 1 / 1;
+  position: relative;
+  z-index: 1;
+  display: flex;
+  border-radius: 24px;
+  padding: 8px;
+  background: var(--accent);
+}
+
+.end-face {
+  justify-content: flex-start;
+  background-image: none;
+}
+
+.end-kicker {
+  margin: 0;
+  color: var(--faint);
+  font-size: 0.8rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+.end-big {
+  color: var(--num);
+  font-weight: 900;
+  font-stretch: 70%;
+  font-size: clamp(5rem, 20vw, 8rem);
+  line-height: 0.85;
+}
+
+.end-text {
+  margin: 0;
+  font-weight: 700;
+  font-stretch: 85%;
+  font-size: clamp(1.4rem, 1.2vw + 1rem, 2rem);
+  line-height: 1.15;
+}
+
+.end-squares {
+  display: flex;
+  gap: 8px;
+}
+
+.square {
+  width: 44px;
+  height: 44px;
+  border: 3px solid var(--dot-off);
+  border-radius: 10px;
+}
+
+.square.on {
+  border-color: var(--accent);
+  background: var(--accent);
+}
+
+.end-actions {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 8px;
+  width: 100%;
+  margin-top: auto;
+}
+
+.end-actions:has(#end-share[hidden]) #end-copy {
+  grid-column: 1 / -1;
+  min-height: 56px;
+}
+
+.end-actions .btn-primary {
+  min-height: 56px;
+  font-size: 1.1rem;
+}
+
+.end-note {
+  margin: 0;
+  color: var(--faint);
+  font-size: 0.875rem;
+}
+
 /* Play: the answer buttons, then the verdict and Next, in the same spot under the card. */
 .game-actions {
   width: 100%;
@@ -1283,8 +1457,12 @@ h2 {
     display: flex;
   }
 
-  .game-actions {
+  .game-actions,
+  .play-top {
     max-width: 540px;
+  }
+
+  .game-actions {
     margin-top: 22px;
   }
 
