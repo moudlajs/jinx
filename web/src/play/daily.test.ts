@@ -49,7 +49,7 @@ test('the share row has the score and squares, never card text', () => {
 });
 
 test('a game resumes where it stopped and ends after five', () => {
-  const store = { guessBest: 0, daily: {} as Record<string, boolean[]> };
+  const store = { guessBest: 0, daily: {} as Record<string, boolean[]>, ou: { w: 0, l: 0 } };
   const now = () => new Date(Date.UTC(2026, 9, 25, 12));
   const stats = real(40);
   const g = createDaily(store, () => {}, 'u', now);
@@ -68,7 +68,7 @@ test('a game resumes where it stopped and ends after five', () => {
 });
 
 test('an open tab moves on at midnight, but finishes a half-played five first', () => {
-  const store = { guessBest: 0, daily: {} as Record<string, boolean[]> };
+  const store = { guessBest: 0, daily: {} as Record<string, boolean[]>, ou: { w: 0, l: 0 } };
   let clock = new Date(Date.UTC(2026, 9, 25, 21, 50));
   const g = createDaily(store, () => {}, 'u', () => clock);
   const ctx = { previous: undefined, ticker: new Set<string>() };
@@ -86,7 +86,7 @@ test('an open tab moves on at midnight, but finishes a half-played five first', 
 });
 
 test('a stale tab shows the new day before anything is dealt', () => {
-  const store = { guessBest: 0, daily: { '3': [true, true, true, true, true] } as Record<string, boolean[]> };
+  const store = { guessBest: 0, daily: { '3': [true, true, true, true, true] } as Record<string, boolean[]>, ou: { w: 0, l: 0 } };
   let clock = new Date(Date.UTC(2026, 9, 25, 12));
   const g = createDaily(store, () => {}, 'u', () => clock);
   expect(g.progress?.()).toEqual([true, true, true, true, true]);
@@ -96,7 +96,7 @@ test('a stale tab shows the new day before anything is dealt', () => {
 });
 
 test('a card dealt before midnight counts for the day it was dealt', () => {
-  const store = { guessBest: 0, daily: {} as Record<string, boolean[]> };
+  const store = { guessBest: 0, daily: {} as Record<string, boolean[]>, ou: { w: 0, l: 0 } };
   // 23:59 and 00:01 in Prague, which is UTC+1 after the clocks go back on 25 October.
   let clock = new Date(Date.UTC(2026, 9, 25, 22, 59));
   const g = createDaily(store, () => {}, 'u', () => clock);

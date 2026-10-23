@@ -15,7 +15,7 @@ test('history keeps only the latest calls', () => {
 });
 
 test('a new best streak is saved', () => {
-  const store = { guessBest: 1, daily: {} };
+  const store = { guessBest: 1, daily: {}, ou: { w: 0, l: 0 } };
   let saves = 0;
   const g = createGuess(store, () => saves++, () => 0.9);
   const card = g.deal([], { previous: undefined, ticker: new Set() });

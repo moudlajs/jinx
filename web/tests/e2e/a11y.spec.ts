@@ -36,6 +36,12 @@ const states: [string, (page: Page) => Promise<void>][] = [
     await page.getByRole('button', { name: 'Fake', exact: true }).click();
     await expect(page.getByRole('button', { name: 'Next card' })).toBeFocused();
   }],
+  ['over / under, face down', async (page) => {
+    await page.goto('./');
+    await page.getByRole('radio', { name: /^Play/ }).check();
+    await page.getByRole('radio', { name: 'Over / Under' }).check();
+    await expect(page.locator('#card-line')).toBeVisible();
+  }],
   ['daily five, done', async (page) => {
     await page.goto('./');
     await page.getByRole('radio', { name: /^Play/ }).check();

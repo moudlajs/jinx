@@ -997,6 +997,23 @@ h2 {
   background: color-mix(in srgb, var(--real-bg) 10%, transparent);
 }
 
+.btn-answer[data-tone='line'] {
+  border-color: var(--accent);
+  background: color-mix(in srgb, var(--accent) 8%, transparent);
+}
+
+/* Over / Under: the line to beat, under the hidden number. */
+.card-line {
+  align-self: flex-start;
+  margin: 14px 0 0;
+  padding: 6px 12px;
+  border: 2px dashed var(--accent);
+  border-radius: 10px;
+  font-weight: 900;
+  font-stretch: 80%;
+  font-size: 1.25rem;
+}
+
 .verdict-row {
   display: grid;
   grid-template-columns: minmax(0, 1fr) auto;

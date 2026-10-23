@@ -6,6 +6,8 @@ export interface PlayStore {
   guessBest: number;
   // Daily Five answers by day number, right or wrong, in order.
   daily: Record<string, boolean[]>;
+  // Over / Under, right and wrong.
+  ou: { w: number; l: number };
 }
 
 const count = (v: unknown) => (Number.isInteger(v) && (v as number) >= 0 ? (v as number) : 0);
@@ -24,9 +26,10 @@ export function loadPlay(storage?: Pick<Storage, 'getItem'>): PlayStore {
   try {
     const raw: unknown = JSON.parse((storage ?? globalThis.localStorage).getItem(KEY) ?? 'null');
     const r = (raw && typeof raw === 'object' ? raw : {}) as Record<string, unknown>;
-    return { guessBest: count(r.guessBest), daily: cleanDaily(r.daily) };
+    const ou = (r.ou && typeof r.ou === 'object' ? r.ou : {}) as Record<string, unknown>;
+    return { guessBest: count(r.guessBest), daily: cleanDaily(r.daily), ou: { w: count(ou.w), l: count(ou.l) } };
   } catch {
-    return { guessBest: 0, daily: {} };
+    return { guessBest: 0, daily: {}, ou: { w: 0, l: 0 } };
   }
 }
 
