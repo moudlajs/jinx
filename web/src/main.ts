@@ -5,8 +5,9 @@ import { randomSeed } from './fake/seed';
 import { parseHash, setHash } from './hash';
 import { applyI18n, t } from './i18n';
 import { createDaily, dailyFive, dayNumber } from './play/daily';
-import type { Game } from './play/game';
+import type { Game, GameId } from './play/game';
 import { createGuess } from './play/guess';
+import { createOverUnder } from './play/overunder';
 import { loadPlay, savePlay } from './play/store';
 import { attribution, randomQuote } from './quotes';
 import { loadStats, pickReal } from './real';
@@ -14,7 +15,7 @@ import { copyText, shareBody, statUrl } from './share';
 import type { Mode, Stat } from './stat';
 import { initThemeToggle } from './theme';
 import { renderCard } from './ui/card';
-import { maskLabel, unmask } from './ui/mask';
+import { maskLabel, maskNumber, unmask } from './ui/mask';
 import { renderProgress, renderScore, renderSquares } from './ui/score';
 import { interleave, renderTicker } from './ui/ticker';
 import { renderVisit } from './ui/visit';
@@ -190,10 +191,12 @@ const endShare = byId('end-share');
 const turn = byId('turn');
 const store = loadPlay();
 const save = () => savePlay(store);
-const games: Record<'daily' | 'guess', Game> = {
+const games: Record<GameId, Game> = {
   daily: createDaily(store, save, `${location.origin}${location.pathname}`),
   guess: createGuess(store, save),
+  overunder: createOverUnder(store, save),
 };
+const cardLine = byId('card-line');
 let game: Game = games.guess;
 let playing = false;
 let round: Stat | undefined;
@@ -223,8 +226,13 @@ function showRound(stat: Stat): void {
   round = stat;
   answered = false;
   setTurned(false);
+  unmask(els, turn);
   renderCard(els, stat);
-  maskLabel(els, turn);
+  const face = game.face?.(stat);
+  if (face) maskNumber(els, turn, face);
+  else maskLabel(els, turn);
+  cardLine.textContent = face?.line ?? '';
+  cardLine.hidden = !face;
   hero.hidden = true;
   play.end.hidden = true;
   play.answer.hidden = false;
@@ -233,7 +241,7 @@ function showRound(stat: Stat): void {
 
 function showEnd(): void {
   const end = game.end?.();
-  if (!end) return;
+  if (!end) return announce(t('play.empty'));
   clearStatus();
   toss();
   round = undefined;
@@ -310,6 +318,7 @@ function stopPlay(): void {
   playing = false;
   round = undefined;
   ++ticket;
+  cardLine.hidden = true;
   play.top.hidden = true;
   play.actions.hidden = true;
   play.end.hidden = true;
@@ -325,7 +334,7 @@ play.next.addEventListener('click', () =>
 );
 for (const input of gameInputs) {
   input.addEventListener('change', () => {
-    setGame(input.value === 'daily' ? 'daily' : 'guess');
+    setGame(input.value in games ? (input.value as GameId) : 'guess');
     void dealRound();
   });
 }

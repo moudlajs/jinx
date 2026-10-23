@@ -130,3 +130,41 @@ test('Daily Five is the same five in a fresh browser', async ({ page, browser })
   await expect(other.locator('#stat-text')).toHaveText(first ?? '');
   await other.close();
 });
+
+test('Over / Under: a real stat with its number hidden, a line, and a record that sticks', async ({ page }) => {
+  await page.goto('./');
+  await page.getByRole('radio', { name: /^Play/ }).check();
+  await page.getByRole('radio', { name: 'Over / Under' }).check();
+  await expect(page.locator('#card-line')).toContainText('The line:');
+  await expect(page.locator('#card-big')).toHaveText(/^\?(–\?|\?)$/);
+  await expect(page.locator('#stat-text')).toContainText('?');
+  await expect(badge(page)).toContainText('Real data');
+  await expect(page.locator('#turn')).toBeHidden();
+  await expect(page.locator('#back-text')).toBeEmpty();
+
+  await page.getByRole('button', { name: '▲ Over' }).click();
+  await expect(page.locator('#verdict-title')).toHaveText(/^(Cashed\. Emotionally\.|Bad beat\.)$/);
+  await expect(page.locator('#verdict-sub')).toHaveText(/^It came in (over|under), at /);
+  await expect(page.locator('#card-big')).not.toContainText('?');
+  await expect(page.locator('#card-line')).toBeVisible();
+  await expect(page.locator('#scoreline')).toHaveText(/^Record (1–0|0–1) · (100|0)% right · Bankroll \$0$/);
+  const record = await page.locator('#scoreline').textContent();
+
+  await page.getByRole('button', { name: 'Next line' }).click();
+  await expect(page.locator('#card-big')).toHaveText(/\?/);
+  await page.reload();
+  await page.getByRole('radio', { name: /^Play/ }).check();
+  await page.getByRole('radio', { name: 'Over / Under' }).check();
+  await expect(page.locator('#scoreline')).toHaveText(record ?? '');
+});
+
+test('the line goes away outside Over / Under', async ({ page }) => {
+  await page.goto('./');
+  await page.getByRole('radio', { name: /^Play/ }).check();
+  await page.getByRole('radio', { name: 'Over / Under' }).check();
+  await expect(page.locator('#card-line')).toBeVisible();
+  await page.getByRole('radio', { name: 'Fake or Real' }).check();
+  await expect(page.locator('#card-line')).toBeHidden();
+  await page.getByRole('radio', { name: /^Fake(?! or)/ }).check();
+  await expect(page.locator('#card-line')).toBeHidden();
+});

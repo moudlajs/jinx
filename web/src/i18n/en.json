@@ -103,5 +103,21 @@
   "play.daily.rank3": "Not bad. Not a scout yet.",
   "play.daily.rank4": "Sharp. The kicker is scared of you.",
   "play.daily.rank5": "Perfect. You are the jinx now.",
-  "play.copiedRow": "Copied your row. Go brag."
+  "play.copiedRow": "Copied your row. Go brag.",
+  "play.ou.name": "Over / Under",
+  "play.ou.over": "▲ Over",
+  "play.ou.under": "▼ Under",
+  "play.ou.wins": " wins",
+  "play.ou.line": "The line: {line}",
+  "play.ou.right": "Cashed. Emotionally.",
+  "play.ou.wrong": "Bad beat.",
+  "play.ou.cameOver": "It came in over, at {value}.",
+  "play.ou.cameUnder": "It came in under, at {value}.",
+  "play.ou.next": "Next line",
+  "play.ou.title": "Your record",
+  "play.ou.bigLabel": "against the line",
+  "play.ou.pct": "{pct}% right",
+  "play.ou.bankroll": "Bankroll: $0, always",
+  "play.ou.scoreline": "Record {w}–{l} · {pct}% right · Bankroll $0",
+  "play.empty": "No real stats with a number to set a line on. Try Fake or Real."
 }
